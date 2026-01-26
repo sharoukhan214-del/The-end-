@@ -2,96 +2,133 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>صنايعي</title>
+<title>منصة الصنايعية</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 *{
     box-sizing:border-box;
-}
-body{
     margin:0;
-    font-family:Arial;
+    padding:0;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    direction: rtl;
     background:#0f172a;
     color:#fff;
-    direction:rtl;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
-/* شريط علوي */
+/* الهيدر */
 header{
-    padding:25px;
-    text-align:center;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     background:#020617;
-    font-size:24px;
+    font-size:20px;
     font-weight:bold;
+    border-bottom:1px solid #1e293b;
 }
 
-/* محتوى */
-.container{
+/* الشاشة */
+.screen{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
     padding:20px;
-    max-width:500px;
-    margin:auto;
 }
 
-/* كروت */
+/* الكارت */
 .card{
     background:#020617;
     border:1px solid #1e293b;
-    border-radius:16px;
-    padding:20px;
+    border-radius:18px;
+    padding:25px;
+    max-width:420px;
+    width:100%;
+    margin:auto;
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+}
+
+.card h2{
+    text-align:center;
     margin-bottom:20px;
 }
 
-/* عناوين */
-.card h3{
-    margin:0 0 15px;
-}
-
-/* مدخلات */
+/* inputs */
 input{
     width:100%;
     padding:14px;
-    margin-bottom:12px;
-    border-radius:10px;
+    margin-bottom:14px;
+    border-radius:12px;
     border:none;
     background:#1e293b;
     color:#fff;
     font-size:16px;
 }
 
-/* زرار */
+/* زرار أساسي */
 button{
     width:100%;
-    padding:14px;
+    padding:15px;
     border:none;
-    border-radius:12px;
+    border-radius:14px;
     background:#2563eb;
     color:#fff;
     font-size:17px;
     font-weight:bold;
+    cursor:pointer;
+}
+
+/* شريط سفلي */
+.bottom-bar{
+    height:65px;
+    background:#020617;
+    border-top:1px solid #1e293b;
+    display:flex;
+}
+
+.bottom-bar button{
+    flex:1;
+    background:none;
+    border:none;
+    color:#94a3b8;
+    font-size:14px;
+}
+
+.bottom-bar button.active{
+    color:#fff;
 }
 </style>
 </head>
 
 <body>
 
-<header>منصة الصنايعية</header>
+<header>
+    منصة الصنايعية
+</header>
 
-<div class="container">
-
-    <div class="card">
-        <h3>🧑‍🔧 تسجيل صنايعي</h3>
-        <input placeholder="اسمك">
-        <input placeholder="المهنة">
-        <button>تسجيل</button>
-    </div>
+<div class="screen">
 
     <div class="card">
-        <h3>👤 طلب خدمة</h3>
-        <input placeholder="الخدمة المطلوبة">
-        <input placeholder="العنوان">
+        <h2>طلب خدمة</h2>
+        <input type="text" placeholder="نوع الخدمة">
+        <input type="text" placeholder="العنوان">
+        <input type="text" placeholder="تفاصيل إضافية">
         <button>إرسال الطلب</button>
     </div>
 
+</div>
+
+<div class="bottom-bar">
+    <button class="active">الرئيسية</button>
+    <button>الطلبات</button>
+    <button>حسابي</button>
 </div>
 
 </body>
