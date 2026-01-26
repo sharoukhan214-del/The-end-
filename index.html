@@ -28,13 +28,20 @@
     <div style="text-align: center; padding: 40px 20px;">
         <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img" onclick="adminAccess()">
         <h1>منصة الصنايعية</h1>
-        <p>GPS | فلترة | تفاوض على السعر</p>
+        <p>دخول العميل | دخول الصنايعي | GPS</p>
         <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">دخول العميل</button>
         <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">دخول الصنايعي</button>
     </div>
 </div>
 
-<div id="reg-client" class="screen"><div class="card"><h3>تسجيل عميل</h3><input type="tel" placeholder="رقم الموبايل"><button class="btn" style="background: var(--accent);" onclick="show('client-dash')">دخول</button></div></div>
+<div id="reg-client" class="screen">
+    <div class="card">
+        <h3>تسجيل دخول العميل</h3>
+        <input type="tel" placeholder="رقم الموبايل">
+        <button class="btn" style="background: var(--accent);" onclick="show('client-dash')">دخول</button>
+    </div>
+</div>
+
 <div id="client-dash" class="screen">
     <header><a onclick="show('splash')">خروج</a></header>
     <div class="card">
@@ -59,9 +66,11 @@
             <option value="نجارة">نجار</option>
             <option value="كهرباء">كهربائي</option>
         </select>
+        <input type="number" placeholder="الرقم القومي (14 رقم)">
         <button class="btn" style="background: var(--blue); color:white;" onclick="loginWorker()">دخول للعمل</button>
     </div>
 </div>
+
 <div id="worker-dash" class="screen">
     <header><a onclick="show('worker-wallet')">المحفظة</a><a onclick="show('splash')">خروج</a></header>
     <div class="card">
@@ -83,13 +92,13 @@
     <header style="background: var(--danger);"><span>لوحة المدير</span><a onclick="show('splash')">خروج</a></header>
     <div class="card">
         <h3>الباسورد صحيح Mohamed214@</h3>
-        <button class="btn" style="background: var(--success);" onclick="alert('تم تصفير المديونية')">تأكيد سداد</button>
+        <button class="btn" style="background: var(--success);" onclick="confirmPayment()">تأكيد سداد عينة</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    let db = []; // مخزن الأوردرات
+    let db = []; // مخزن الأوردرات المؤقت
 
     function show(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -98,14 +107,28 @@
         if(id === 'worker-dash') renderJobs();
     }
 
+    function initMap(divId) {
+        setTimeout(() => {
+            var map = L.map(divId).setView([30.0444, 31.2357], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            L.marker([30.0444, 31.2357]).addTo(map);
+        }, 200);
+    }
+
     function submitJob() {
         let type = document.getElementById('clientJobType').value;
         let desc = document.getElementById('clientJobDesc').value;
         let price = document.getElementById('clientPrice').value;
         if(!desc || !price) return alert("أكمل البيانات");
         db.push({ type, desc, price });
-        alert("تم النشر بنجاح!");
+        alert("تم النشر بنجاح! سيظهر الآن للصنايعية المتخصصين.");
         show('splash');
+    }
+
+    function loginWorker() {
+        let spec = document.getElementById('workerSpecSelect').value;
+        document.getElementById('workerSpecLabel').innerText = spec;
+        show('worker-dash');
     }
 
     function renderJobs() {
@@ -113,4 +136,49 @@
         let list = document.getElementById('availableJobs');
         list.innerHTML = "";
         
-        let filtered = db.filter(j => (spec === "سباك" && j.type === "سباكة") || (spec ===
+        // فلترة التخصصات
+        let filtered = db.filter(j => 
+            (spec === "سباك" && j.type === "سباكة") || 
+            (spec === "نجار" && j.type === "نجارة") || 
+            (spec === "كهربائي" && j.type === "كهرباء")
+        );
+        
+        if(filtered.length === 0) {
+            list.innerHTML = "<p style='text-align:center; opacity:0.6;'>لا توجد طلبات جديدة حالياً</p>";
+            return;
+        }
+        
+        filtered.forEach(j => {
+            list.innerHTML += `
+                <div class="job-item">
+                    <p><strong>الوصف:</strong> ${j.desc}</p>
+                    <p><strong>عرض العميل:</strong> <span class="price-tag">${j.price} ج</span></p>
+                    <button class="btn" style="background: var(--accent);" onclick="negotiate()">تقديم عرض سعر (فصال)</button>
+                    <button class="btn" style="background: var(--success); color:white;" onclick="alert('جاري الاتصال بالعميل...')">اتصال بالعميل 📞</button>
+                </div>
+            `;
+        });
+    }
+
+    function negotiate() {
+        let p = prompt("أدخل السعر الذي تطلبه (فصال):");
+        if(p) alert("تم إرسال عرضك للعميل بقيمة: " + p + " ج");
+    }
+
+    let clicks = 0;
+    function adminAccess() {
+        clicks++;
+        if (clicks === 3) {
+            let p = prompt("باسورد المدير:");
+            if (p === "Mohamed214@") show('admin-dash');
+            else { alert("باسورد خطأ!"); clicks = 0; }
+        }
+    }
+
+    function confirmPayment() {
+        alert("تم تصفير المديونية بنجاح!");
+        document.getElementById('debtDisplay').innerText = "0";
+    }
+</script>
+</body>
+    </html>
