@@ -3,82 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - النظام المتكامل</title>
+    <title>منصة الصنايعية - النظام الشامل</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 60px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 70px; }
         .screen { display: none; min-height: 100vh; animation: fadeIn 0.4s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; margin: 15px; border: 1px solid #334155; }
-        .btn { border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
-        #map { height: 250px; border-radius: 15px; margin-top: 10px; border: 2px solid var(--accent); }
+        
+        /* الهيدر */
+        header { background: #161e2e; padding: 15px; display: flex; justify-content: space-around; border-bottom: 2px solid var(--accent); position: sticky; top:0; z-index:100; }
+        header a { color: white; text-decoration: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+
+        .card { background: var(--card); padding: 15px; border-radius: 15px; margin: 15px; border: 1px solid #334155; }
+        .btn { border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
+        
+        /* الخريطة والشات */
+        .map-container { height: 250px; border-radius: 15px; border: 2px solid var(--accent); margin: 10px 0; }
+        .chat-area { height: 120px; background: #0f172a; border-radius: 10px; padding: 10px; overflow-y: auto; font-size: 0.9rem; border: 1px solid #334155; }
+        .hero-img { width: 150px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div id="splash" class="screen active">
     <div style="text-align: center; padding: 50px 20px;">
-        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" style="width: 150px; border-radius: 50%; border: 4px solid var(--accent);">
-        <h1>منصة الصنايعية</h1>
-        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">دخول كعميل (موبايل)</button>
-        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">دخول كصنايعي (قومي + موبايل)</button>
+        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img">
+        <h1>مرحباً بك في المنصة</h1>
+        <p>نظام أمان يضمن حقك بالرقم القومي</p>
+        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">تسجيل عميل (بالموبايل)</button>
+        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">تسجيل صنايعي (بالموبايل والقومي)</button>
+    </div>
+</div>
+
+<div id="client-dash" class="screen">
+    <header>
+        <a onclick="show('client-dash')">الطلبات</a>
+        <a onclick="show('client-profile')">بروفايلي</a>
+        <a onclick="show('splash')">خروج</a>
+    </header>
+    <div class="card">
+        <h3>طلب صنايعي (حدد موقعك)</h3>
+        <div id="map-client" class="map-container"></div>
+        <input type="text" id="jobDesc" placeholder="ما هي المشكلة؟">
+        <input type="number" id="jobPrice" placeholder="السعر المقترح (جنيه)">
+        <button class="btn" style="background: var(--accent);" onclick="startOrder()">نشر الطلب للتفاوض</button>
+    </div>
+    <div id="active-order-client" class="card" style="display:none;">
+        <h4>تتبع الفني وشات</h4>
+        <div class="chat-area">نظام: "تم قبول طلبك، الفني في الطريق.."</div>
+        <button class="btn" style="background: var(--blue); color:white;">اتصال هاتفي 📞</button>
+    </div>
+</div>
+
+<div id="worker-dash" class="screen">
+    <header>
+        <a onclick="show('worker-dash')">المهام</a>
+        <a onclick="show('worker-wallet')">المحفظة</a>
+        <a onclick="show('worker-profile')">بروفايلي</a>
+    </header>
+    <div class="card">
+        <h3>طلبات متاحة قريبة منك</h3>
+        <div style="background:#0f172a; padding:10px; border-radius:10px;">
+            <p><strong>سباكة - المعادي</strong> (500 ج)</p>
+            <button class="btn" style="background:var(--success); color:white;" onclick="acceptOrder()">إستلام الأوردر (فتح GPS)</button>
+        </div>
+        <div id="map-worker" class="map-container" style="display:none;"></div>
+    </div>
+</div>
+
+<div id="worker-wallet" class="screen">
+    <div class="card">
+        <h3>محفظة العمولات (20%)</h3>
+        <div style="background:var(--danger); padding:20px; border-radius:10px; text-align:center;">
+            <p>المديونية الحالية:</p>
+            <h1 id="debt">0 جنيه</h1>
+        </div>
+        <div class="card" style="margin:10px 0; background:#0f172a;">
+            <p>للسداد، حول على انستا باي:</p>
+            <h2 style="color:var(--accent)">01020744825</h2>
+        </div>
+        <button class="btn" style="background:var(--success); color:white;">إرسال صورة التحويل</button>
+    </div>
+</div>
+
+<div id="client-profile" class="screen">
+    <div class="card" style="text-align:center;">
+        <div style="width:80px; height:80px; background:grey; border-radius:50%; margin: 0 auto 10px;"></div>
+        <h3>بروفايل العميل</h3>
+        <p>رقم الموبايل: 01XXXXXXXX</p>
+        <button class="btn" onclick="show('client-dash')">رجوع</button>
+    </div>
+</div>
+
+<div id="worker-profile" class="screen">
+    <div class="card" style="text-align:center;">
+        <img src="https://via.placeholder.com/80" style="border-radius:50%;">
+        <h3>أحمد السباك (موثق ✅)</h3>
+        <p>الرقم القومي: 29XXXXXXXXXXXX</p>
+        <button class="btn" onclick="show('worker-dash')">رجوع</button>
+    </div>
+</div>
+
+<div id="reg-worker" class="screen">
+    <div class="card">
+        <h3>تسجيل فني جديد</h3>
+        <input type="text" placeholder="الاسم بالكامل">
+        <input type="number" placeholder="الرقم القومي">
+        <input type="tel" placeholder="رقم الموبايل">
+        <button class="btn" style="background:var(--blue); color:white;" onclick="show('worker-dash')">إنشاء الحساب</button>
     </div>
 </div>
 
 <div id="reg-client" class="screen">
     <div class="card">
-        <h3>تسجيل دخول العميل</h3>
-        <input type="tel" id="clientPhone" placeholder="رقم الموبايل (10XXXXXXXX)">
-        <button class="btn" style="background: var(--success); color: white;" onclick="show('client-dash')">دخول وتقديم طلب</button>
-    </div>
-</div>
-
-<div id="client-dash" class="screen">
-    <div class="card">
-        <h3>تقديم طلب جديد</h3>
-        <input type="text" placeholder="ما هي المشكلة؟ (مثلاً: عطل كهرباء)">
-        <input type="number" id="offerPrice" placeholder="سعرك المقترح (جنيه)">
-        <button class="btn" style="background: var(--accent);" onclick="alert('تم نشر طلبك.. الصنايعية سيتفاوضون معك الآن')">نشر الطلب للتفاوض</button>
-    </div>
-    <div class="card">
-        <h4>تتبع الصنايعي (GPS) 📍</h4>
-        <div id="map"></div> </div>
-</div>
-
-<div id="reg-worker" class="screen">
-    <div class="card">
-        <h3>تسجيل فني (توثيق القومي)</h3>
-        <input type="text" placeholder="الاسم بالكامل">
-        <input type="number" placeholder="الرقم القومي (14 رقم)">
+        <h3>تسجيل عميل</h3>
         <input type="tel" placeholder="رقم الموبايل">
-        <button class="btn" style="background: var(--blue); color: white;" onclick="show('worker-dash')">دخول لوحة العمولات</button>
-    </div>
-</div>
-
-<div id="worker-dash" class="screen">
-    <div class="card" style="border-right: 5px solid var(--danger);">
-        <h3>المحفظة (عمولة 20%)</h3>
-        <p>المديونية الحالية: <span style="color: var(--danger);">0 جنيه</span></p>
-        <button class="btn" style="background: var(--success); color: white;">سداد العمولات</button>
+        <button class="btn" style="background:var(--accent);" onclick="show('client-dash')">دخول</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    let mapC, mapW;
     function show(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'client-dash') initMap(); // تشغيل الخريطة عند فتح واجهة العميل
+        if(id === 'client-dash' && !mapC) initMap('map-client', 'C');
+        if(id === 'worker-dash' && !mapW) initMap('map-worker', 'W');
     }
 
-    function initMap() {
-        // إنشاء خريطة GPS حقيقية (افتراضياً على القاهرة)
-        var map = L.map('map').setView([30.0444, 31.2357], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        L.marker([30.0444, 31.2357]).addTo(map).bindPopup('موقعك الحالي').openPopup();
+    function initMap(divId, type) {
+        let m = L.map(divId).setView([30.0444, 31.2357], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+        L.marker([30.0444, 31.2357]).addTo(m).bindPopup(type === 'C' ? 'حدد موقعك' : 'موقع العميل').openPopup();
+        if(type === 'C') mapC = m; else mapW = m;
+    }
+
+    function startOrder() {
+        document.getElementById('active-order-client').style.display = 'block';
+        alert('تم نشر طلبك للصنايعية القريبين');
+    }
+
+    function acceptOrder() {
+        document.getElementById('map-worker').style.display = 'block';
+        alert('تم استلام الأوردر.. تتبع العميل الآن عبر الخريطة');
     }
 </script>
 
