@@ -3,115 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة الصنايعية</title>
+<title>خدماتك</title>
+
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; font-family: Arial, Helvetica, sans-serif; direction:rtl; }
-body { background:linear-gradient(180deg,#020617,#0f172a); color:#fff; display:flex; flex-direction:column; min-height:100dvh; }
-
-header {
-    height:60px; display:flex; align-items:center; justify-content:center;
-    font-size:22px; font-weight:bold; background:#020617; border-bottom:1px solid #1e293b;
+*{box-sizing:border-box;font-family:Arial}
+body{
+margin:0;
+background:#f4f4f4;
+direction:rtl;
 }
 
-.app { flex:1; display:flex; align-items:center; justify-content:center; padding:20px; }
-
-.screen { width:100%; max-width:420px; background:#020617; border-radius:22px; padding:30px 20px; box-shadow:0 30px 60px rgba(0,0,0,.6); display:none; flex-direction:column; }
-
-.screen.active { display:flex; }
-
-.screen h1 { text-align:center; margin-bottom:25px; font-size:22px; }
-
-input {
-    width:100%; padding:14px; margin-bottom:15px;
-    border:none; border-radius:14px; background:#1e293b; color:#fff; font-size:16px;
+header{
+background:#111;
+color:#fff;
+padding:15px;
+text-align:center;
+font-size:20px;
+cursor:pointer;
 }
 
-button {
-    width:100%; padding:16px; border:none; border-radius:16px;
-    background:#2563eb; font-size:17px; font-weight:bold; color:#fff; cursor:pointer;
+.app{
+min-height:100vh;
+display:flex;
+flex-direction:column;
 }
 
-.bottom-bar {
-    height:70px; background:#020617; border-top:1px solid #1e293b; display:flex;
+.screen{
+flex:1;
+padding:15px;
+display:none;
 }
 
-.bottom-bar button {
-    flex:1; background:none; border:none; color:#94a3b8; font-size:14px; cursor:pointer;
+.screen.active{display:block}
+
+.card{
+background:#fff;
+border-radius:14px;
+padding:15px;
+margin-bottom:15px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
 }
 
-.bottom-bar button.active { color:#fff; }
+input,select{
+width:100%;
+padding:12px;
+margin-top:8px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#111;
+color:#fff;
+font-size:16px;
+margin-top:10px;
+cursor:pointer;
+}
+
+button.alt{background:#666}
+button.warn{background:#b00020}
+
+nav{
+display:flex;
+border-top:1px solid #ddd;
+background:#fff;
+}
+
+nav button{
+flex:1;
+border-radius:0;
+background:#fff;
+color:#111;
+font-size:14px;
+border:none;
+padding:12px;
+}
+
+nav button.active{
+background:#111;
+color:#fff;
+}
+
+/* Map Mock */
+.map{
+height:160px;
+background:linear-gradient(45deg,#ccc,#eee);
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+color:#555;
+}
+
+/* Admin */
+#adminOverlay{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.85);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+#adminBox{
+background:#fff;
+padding:20px;
+border-radius:14px;
+width:90%;
+max-width:400px;
+}
+
+.stat{
+background:#eee;
+padding:10px;
+border-radius:10px;
+margin:6px 0;
+}
 </style>
 </head>
 
 <body>
 
-<header>منصة الصنايعية</header>
+<header id="logo">خدماتك</header>
 
 <div class="app">
 
-    <!-- شاشة تسجيل دخول العميل -->
-    <div class="screen active" id="loginScreen">
-        <h1>تسجيل الدخول / جديد</h1>
-        <input type="text" placeholder="اسم المستخدم" id="username">
-        <input type="password" placeholder="كلمة المرور" id="password">
-        <button onclick="loginUser()">تسجيل دخول</button>
-        <button onclick="switchScreen('requestScreen')">تسجيل جديد كعميل</button>
-    </div>
+<!-- تسجيل الدخول -->
+<div class="screen active" id="login">
+<div class="card">
+<h3>تسجيل الدخول</h3>
+<select id="role">
+<option value="client">عميل</option>
+<option value="worker">صنايعي</option>
+</select>
+<input placeholder="الاسم">
+<button onclick="login()">دخول</button>
+</div>
+</div>
 
-    <!-- شاشة طلب خدمة -->
-    <div class="screen" id="requestScreen">
-        <h1>طلب خدمة</h1>
-        <input type="text" placeholder="نوع الخدمة" id="serviceType">
-        <input type="text" placeholder="العنوان" id="serviceAddress">
-        <input type="text" placeholder="تفاصيل إضافية" id="serviceDetails">
-        <button onclick="submitRequest()">إرسال الطلب</button>
-    </div>
+<!-- عميل -->
+<div class="screen" id="client">
+<div class="card">
+<h3>طلب خدمة</h3>
+<select>
+<option>سباك</option>
+<option>كهربائي</option>
+<option>نجار</option>
+<option>نقاش</option>
+</select>
+<input placeholder="وصف المشكلة">
+<input type="number" id="price" placeholder="السعر المقترح">
+<button onclick="createOrder()">إرسال الطلب</button>
+</div>
 
-    <!-- شاشة عرض الطلبات للصنايعي -->
-    <div class="screen" id="workerScreen">
-        <h1>الطلبات المتاحة</h1>
-        <div class="card" id="requestsList">
-            <p>لا توجد طلبات حالياً</p>
-        </div>
-        <button onclick="switchScreen('requestScreen')">رجوع</button>
-    </div>
+<div class="card" id="clientOrder" style="display:none">
+<h3>طلبك الحالي</h3>
+<p>الحالة: قيد التنفيذ</p>
+<div class="map">تحرك الصنايعي (تتبع)</div>
+<button class="warn" onclick="finish()">إنهاء الطلب</button>
+</div>
+</div>
+
+<!-- صنايعي -->
+<div class="screen" id="worker">
+<div class="card">
+<h3>طلب متاح</h3>
+<p>سباك – عرض العميل: 200 جنيه</p>
+<input type="number" placeholder="عرض سعر مضاد">
+<button onclick="accept()">قبول بالسعر</button>
+</div>
+</div>
+
+<!-- تنقل -->
+<nav>
+<button id="navClient" onclick="go('client')">العميل</button>
+<button id="navWorker" onclick="go('worker')">الصنايعي</button>
+</nav>
 
 </div>
 
-<!-- Bottom Navigation -->
-<div class="bottom-bar">
-    <button class="active" onclick="switchScreen('requestScreen')">الرئيسية</button>
-    <button onclick="switchScreen('workerScreen')">الطلبات</button>
-    <button onclick="switchScreen('loginScreen')">حسابي</button>
+<!-- Admin -->
+<div id="adminOverlay">
+<div id="adminBox">
+
+<div id="adminLogin">
+<h3>دخول الأدمن</h3>
+<input type="password" id="adminPass">
+<button onclick="adminLogin()">دخول</button>
+</div>
+
+<div id="adminDash" style="display:none">
+<h3>لوحة التحكم</h3>
+<div class="stat">👤 العملاء: 15</div>
+<div class="stat">🛠 الصنايعية: 7</div>
+<div class="stat">📦 الطلبات: 23</div>
+<div class="stat">💰 العمولة: 20%</div>
+<button class="alt" onclick="closeAdmin()">خروج</button>
+</div>
+
+</div>
 </div>
 
 <script>
-// التنقل بين الشاشات
-function switchScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
+let clicks=0,timer;
 
-    // تحديث Bottom Bar
-    document.querySelectorAll('.bottom-bar button').forEach(btn => btn.classList.remove('active'));
-    if(screenId === 'requestScreen') document.querySelectorAll('.bottom-bar button')[0].classList.add('active');
-    if(screenId === 'workerScreen') document.querySelectorAll('.bottom-bar button')[1].classList.add('active');
-    if(screenId === 'loginScreen') document.querySelectorAll('.bottom-bar button')[2].classList.add('active');
-}
-
-// Placeholder JS للوظائف
-function loginUser() {
-    const name = document.getElementById('username').value;
-    alert('تم تسجيل الدخول: ' + name + '\nلاحقًا يتم الربط مع فايربيس');
-}
-
-function submitRequest() {
-    const type = document.getElementById('serviceType').value;
-    const addr = document.getElementById('serviceAddress').value;
-    const details = document.getElementById('serviceDetails').value;
-    alert(`تم إرسال الطلب:\nالخدمة: ${type}\nالعنوان: ${addr}\nالتفاصيل: ${details}\nلاحقًا يتم حفظه في فايربيس`);
-}
-</script>
-
-</body>
-</html>
+logo.onclick=()=>{
+clicks++;
+if(clicks===1) ti
