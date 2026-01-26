@@ -3,97 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - نظام الأمان</title>
+    <title>منصة الصنايعية - النسخة المعتمدة</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #f59e0b; --success: #10b981; --danger: #ef4444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 60px; }
-        header { background: #1e293b; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
-        header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
-        .section { display: none; padding: 20px; animation: fadeIn 0.4s; }
+        :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 80px; }
+        
+        /* الهيدر المطور */
+        header { background: #161e2e; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
+        header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+
+        .section { display: none; padding: 15px; animation: fadeIn 0.4s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #334155; }
-        .btn { border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; background: var(--accent); color: #000; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #334155; color: white; box-sizing: border-box; }
-        .profile-header { text-align: center; border-bottom: 1px solid #475569; padding-bottom: 15px; margin-bottom: 15px; }
-        .profile-img-box { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent); margin: 0 auto 10px; overflow: hidden; background: #0f172a; display: flex; align-items: center; justify-content: center; }
-        .upload-btn { background: #475569; color: white; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; display: inline-block; }
+
+        /* واجهة الصورة (نفس اللي بعتها) */
+        .hero-card { 
+            background: linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.9)), 
+                        url('https://lan214-del.github.io/path-to-your-image.jpg'); /* استبدل بالرابط الحقيقي */
+            background-size: cover; padding: 40px 20px; border-radius: 20px; text-align: center; margin: 10px; border: 1px solid #334155;
+        }
+        .hero-img-main { width: 150px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+
+        .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #334155; }
+        .btn { border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 12px; transition: 0.3s; }
+        
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
+        
+        /* المحفظة والدفع */
+        .wallet-display { background: #0f172a; padding: 15px; border-radius: 10px; border-right: 5px solid var(--danger); }
     </style>
 </head>
 <body>
 
 <header>
     <a onclick="show('home')">الرئيسية</a>
-    <a onclick="show('order')">الطلبات</a>
-    <a onclick="show('profile-view')">الملف الشخصي</a>
+    <a onclick="show('orders')">الطلبات</a>
+    <a onclick="show('wallet')">المحفظة 💰</a>
+    <a onclick="show('profile')">الملف الشخصي</a>
 </header>
 
 <div id="home" class="section active">
-    <div class="card" style="text-align:center;">
-        <h2>مرحباً بك في المنصة</h2>
-        <p>نظام أمان يضمن حقك بالرقم القومي</p>
-        <button class="btn" onclick="show('reg-client')">تسجيل عميل (بالموبايل)</button>
-        <button class="btn" style="background:#3b82f6; color:white;" onclick="show('reg-worker')">تسجيل صنايعي (بالموبايل والقومي)</button>
-    </div>
-</div>
-
-<div id="reg-client" class="section">
-    <div class="card">
-        <h3>تسجيل عميل</h3>
-        <label class="upload-btn">📸 ارفع صورتك الشخصية <input type="file" style="display:none"></label>
-        <input type="text" placeholder="الاسم">
-        <input type="tel" placeholder="رقم الموبايل">
-        <button class="btn" onclick="show('profile-view')">إنشاء الحساب</button>
+    <div class="hero-card">
+        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img-main" alt="صنايعي">
+        <h1 style="margin: 0;">مرحباً بك في المنصة</h1>
+        <p style="color: #cbd5e0; margin: 15px 0;">نظام أمان يضمن حقك بالرقم القومي</p>
+        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">تسجيل عميل (بالموبايل)</button>
+        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">تسجيل صنايعي (بالموبايل والقومي)</button>
     </div>
 </div>
 
 <div id="reg-worker" class="section">
     <div class="card">
-        <h3>تسجيل فني جديد</h3>
-        <p style="color:var(--danger); font-size: 0.8rem;">* الرقم القومي مطلوب لمنع التلاعب والتهرب من المديونية</p>
-        <label class="upload-btn">📸 ارفع صورتك المهنية <input type="file" style="display:none"></label>
-        <input type="text" placeholder="الاسم بالكامل (كما في البطاقة)">
-        <input type="tel" placeholder="رقم الموبايل الحالي">
-        <input type="number" id="id-card" placeholder="الرقم القومي (14 رقم)" required>
-        <select>
-            <option>سباك</option>
-            <option>كهربائي</option>
-            <option>نجار</option>
+        <h3>توثيق حساب فني</h3>
+        <label>ارفع صورتك الشخصية:</label>
+        <input type="file" accept="image/*">
+        <input type="text" placeholder="الاسم بالكامل">
+        <input type="tel" placeholder="رقم الموبايل">
+        <input type="number" placeholder="الرقم القومي (14 رقم)" id="natIdInput">
+        <button class="btn" style="background: var(--success); color: white;" onclick="show('profile')">تفعيل الحساب</button>
+    </div>
+</div>
+
+<div id="reg-client" class="section">
+    <div class="card">
+        <h3>طلب صنايعي جديد</h3>
+        <input type="text" placeholder="وصف المشكلة">
+        <input type="number" id="priceInput" placeholder="السعر المعروض (جنيه)">
+        <label>طريقة الدفع:</label>
+        <select id="paymentType">
+            <option value="cash">كاش (يدوي)</option>
+            <option value="online">دفع إلكتروني (محفظة/كارت)</option>
         </select>
-        <button class="btn" style="background:var(--success); color:white;" onclick="show('profile-view')">تأكيد الهوية والتسجيل</button>
+        <button class="btn" onclick="alert('جاري البحث عن فنيين قريبين منك...')">ارسال الطلب</button>
     </div>
 </div>
 
-<div id="profile-view" class="section">
+<div id="wallet" class="section">
     <div class="card">
-        <div class="profile-header">
-            <div class="profile-img-box">
-                <img src="https://via.placeholder.com/120" style="width:100%">
-            </div>
-            <h3 id="display-name">محمد أحمد</h3>
-            <span style="background:var(--success); padding:3px 10px; border-radius:15px; font-size:0.7rem;">حساب موثق ✅</span>
+        <h3>محفظة العمولات</h3>
+        <div class="wallet-display">
+            <p>مديونية المنصة الحالية:</p>
+            <h2 id="debtDisplay" style="color: var(--danger);">0 جنيه</h2>
+            <small>حد التوقف عن استقبال الشغل: 1000 ج</small>
         </div>
-        
-        <div class="info-row">
-            <p><strong>📱 رقم التليفون:</strong> 010XXXXXXXX</p>
-            <p><strong>🆔 الرقم القومي:</strong> 29XXXXXXXXXXXX (مسجل)</p>
-            <p><strong>⭐ التقييم العام:</strong> 4.9/5</p>
-            <p><strong>💰 محفظة المديونية:</strong> <span style="color:var(--danger)">150 جنيه</span></p>
-        </div>
-        
-        <button class="btn" style="background:#475569; color:white;">تعديل بيانات الملف</button>
-        <button class="btn" style="background:var(--danger); color:white; margin-top:20px;">تسجيل الخروج</button>
+        <button class="btn" style="background: var(--success); color: white;">سداد المديونية الآن</button>
     </div>
 </div>
 
-<div id="order" class="section">
-    <div class="card">
-        <h3>طلبات العمل المتاحة</h3>
-        <div style="background:#0f172a; padding:15px; border-radius:10px; margin-bottom:10px;">
-            <p><strong>أوردر سباكة - المعادي</strong></p>
-            <p>ميزانية العميل: 400 ج</p>
-            <button class="btn" style="padding:5px;">تقديم عرض سعر</button>
-        </div>
+<div id="profile" class="section">
+    <div class="card" style="text-align: center;">
+        <img src="https://via.placeholder.com/100" style="border-radius: 50%; border: 2px solid var(--accent);">
+        <h3>الاسم الموثق بالبطاقة</h3>
+        <p>الرقم القومي: مسجل ✅</p>
+        <p>الحساب: فعال</p>
+        <button class="btn" style="background: var(--danger); color: white;" onclick="show('home')">تسجيل الخروج</button>
     </div>
 </div>
 
@@ -101,6 +104,15 @@
     function show(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+    }
+
+    // منطق بسيط لحساب المديونية عند تجربة السيستم
+    let totalDebt = 0;
+    function simulateEndJob() {
+        let price = document.getElementById('priceInput').value || 500;
+        let commission = price * 0.20;
+        totalDebt += commission;
+        document.getElementById('debtDisplay').innerText = totalDebt.toFixed(0) + " جنيه";
     }
 </script>
 
