@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - نظام الربط الذكي</title>
+    <title>منصة الصنايعية - النظام المتكامل 2026</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
@@ -18,7 +18,8 @@
         input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
         .hero-img { width: 150px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; cursor: pointer; }
         .map-container { height: 200px; border-radius: 12px; border: 2px solid var(--accent); margin-top: 10px; }
-        .job-item { background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid var(--blue); }
+        .job-item { background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid var(--success); }
+        .price-tag { color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -27,41 +28,52 @@
     <div style="text-align: center; padding: 40px 20px;">
         <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img" onclick="adminAccess()">
         <h1>منصة الصنايعية</h1>
+        <p>GPS | فلترة | تفاوض على السعر</p>
         <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">دخول العميل</button>
         <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">دخول الصنايعي</button>
     </div>
 </div>
 
+<div id="reg-client" class="screen"><div class="card"><h3>تسجيل عميل</h3><input type="tel" placeholder="رقم الموبايل"><button class="btn" style="background: var(--accent);" onclick="show('client-dash')">دخول</button></div></div>
 <div id="client-dash" class="screen">
     <header><a onclick="show('splash')">خروج</a></header>
     <div class="card">
-        <h3>طلب فني متخصص</h3>
-        <select id="jobType">
+        <h3>اطلب فني متخصص</h3>
+        <select id="clientJobType">
             <option value="سباكة">سباكة</option>
             <option value="نجارة">نجارة</option>
             <option value="كهرباء">كهرباء</option>
         </select>
-        <input type="text" id="jobDesc" placeholder="وصف المشكلة بالتفصيل">
-        <input type="number" id="jobPrice" placeholder="السعر المقترح">
+        <input type="text" id="clientJobDesc" placeholder="وصف المشكلة">
+        <input type="number" id="clientPrice" placeholder="ميزانيتك (جنيه)">
         <div id="map-client" class="map-container"></div>
-        <button class="btn" style="background: var(--accent);" onclick="submitOrder()">نشر الطلب الآن</button>
+        <button class="btn" style="background: var(--accent);" onclick="submitJob()">نشر الطلب</button>
     </div>
 </div>
 
+<div id="reg-worker" class="screen">
+    <div class="card">
+        <h3>تسجيل فني</h3>
+        <select id="workerSpecSelect">
+            <option value="سباكة">سباك</option>
+            <option value="نجارة">نجار</option>
+            <option value="كهرباء">كهربائي</option>
+        </select>
+        <button class="btn" style="background: var(--blue); color:white;" onclick="loginWorker()">دخول للعمل</button>
+    </div>
+</div>
 <div id="worker-dash" class="screen">
     <header><a onclick="show('worker-wallet')">المحفظة</a><a onclick="show('splash')">خروج</a></header>
     <div class="card">
         <p>تخصصك: <span id="workerSpecLabel" style="color:var(--accent)"></span></p>
-        <hr border-color="#334155">
-        <h4>الأوردرات المتاحة لتخصصك:</h4>
-        <div id="jobsList">
-            </div>
+        <div id="availableJobs"></div>
     </div>
 </div>
 
 <div id="worker-wallet" class="screen">
     <div class="card">
-        <h3>المحفظة</h3>
+        <h3>المحفظة (عمولة 20%)</h3>
+        <p>المديونية: <span id="debtDisplay" style="color:var(--danger)">150</span> ج</p>
         <p>انستا باي: <strong>01020744825</strong></p>
         <button class="btn" style="background: var(--success);" onclick="show('worker-dash')">رجوع</button>
     </div>
@@ -69,36 +81,15 @@
 
 <div id="admin-dash" class="screen">
     <header style="background: var(--danger);"><span>لوحة المدير</span><a onclick="show('splash')">خروج</a></header>
-    <div class="card"><button class="btn" style="background: var(--success);" onclick="alert('تم تصفير المديونية')">تأكيد سداد</button></div>
-</div>
-
-<div id="reg-worker" class="screen">
     <div class="card">
-        <h3>تسجيل فني</h3>
-        <select id="workerSpec">
-            <option value="سباكة">سباك</option>
-            <option value="نجارة">نجار</option>
-            <option value="كهرباء">كهربائي</option>
-        </select>
-        <button class="btn" style="background: var(--blue); color:white;" onclick="loginWorker()">دخول للوحة العمل</button>
-    </div>
-</div>
-
-<div id="reg-client" class="screen">
-    <div class="card">
-        <h3>تسجيل عميل</h3>
-        <input type="tel" placeholder="رقم الموبايل">
-        <button class="btn" style="background: var(--accent);" onclick="show('client-dash')">دخول للطلبات</button>
+        <h3>الباسورد صحيح Mohamed214@</h3>
+        <button class="btn" style="background: var(--success);" onclick="alert('تم تصفير المديونية')">تأكيد سداد</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // مخزن الطلبات (Simulation)
-    let allOrders = [
-        {type: 'سباكة', desc: 'تغيير خلاط مياه', price: 150},
-        {type: 'كهرباء', desc: 'تصليح لوحة مفاتيح', price: 200}
-    ];
+    let db = []; // مخزن الأوردرات
 
     function show(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -107,62 +98,19 @@
         if(id === 'worker-dash') renderJobs();
     }
 
-    function submitOrder() {
-        let type = document.getElementById('jobType').value;
-        let desc = document.getElementById('jobDesc').value;
-        let price = document.getElementById('jobPrice').value;
-        
-        if(!desc || !price) { alert("أكمل البيانات!"); return; }
-        
-        allOrders.push({type: type, desc: desc, price: price});
-        alert("تم نشر أوردرك! الصنايعية المتخصصون سيشاهدونه الآن.");
+    function submitJob() {
+        let type = document.getElementById('clientJobType').value;
+        let desc = document.getElementById('clientJobDesc').value;
+        let price = document.getElementById('clientPrice').value;
+        if(!desc || !price) return alert("أكمل البيانات");
+        db.push({ type, desc, price });
+        alert("تم النشر بنجاح!");
         show('splash');
     }
 
     function renderJobs() {
-        let spec = document.getElementById('workerSpec').value;
-        let list = document.getElementById('jobsList');
+        let spec = document.getElementById('workerSpecSelect').value;
+        let list = document.getElementById('availableJobs');
         list.innerHTML = "";
         
-        let myJobs = allOrders.filter(order => order.type === spec || (spec === "سباك" && order.type === "سباكة") || (spec === "نجار" && order.type === "نجارة") || (spec === "كهربائي" && order.type === "كهرباء"));
-        
-        if(myJobs.length === 0) {
-            list.innerHTML = "<p style='text-align:center; opacity:0.5;'>لا يوجد طلبات لتخصصك حالياً</p>";
-        }
-
-        myJobs.forEach(order => {
-            list.innerHTML += `
-                <div class="job-item">
-                    <p><strong>الوصف:</strong> ${order.desc}</p>
-                    <p><strong>السعر المقترح:</strong> ${order.price} جنيه</p>
-                    <button class="btn" style="background: var(--success); font-size:0.8rem;" onclick="alert('جاري فتح الخريطة للوصول للعميل...')">قبول الأوردر</button>
-                </div>
-            `;
-        });
-    }
-
-    function initMap(divId) {
-        setTimeout(() => {
-            var map = L.map(divId).setView([30.0444, 31.2357], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            L.marker([30.0444, 31.2357]).addTo(map);
-        }, 200);
-    }
-
-    function loginWorker() {
-        document.getElementById('workerSpecLabel').innerText = document.getElementById('workerSpec').value;
-        show('worker-dash');
-    }
-
-    let adminClicks = 0;
-    function adminAccess() {
-        adminClicks++;
-        if (adminClicks === 3) {
-            let p = prompt("باسورد المدير:");
-            if (p === "Mohamed214@") show('admin-dash');
-            adminClicks = 0;
-        }
-    }
-</script>
-</body>
-</html>
+        let filtered = db.filter(j => (spec === "سباك" && j.type === "سباكة") || (spec ===
