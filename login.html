@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - منصة الصنايعية</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e67e22; }
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: var(--primary); }
+        .toggle-group { display: flex; justify-content: space-around; margin: 1.5rem 0; background: #eee; padding: 5px; border-radius: 8px; }
+        .toggle-group label { flex: 1; padding: 10px; cursor: pointer; border-radius: 6px; transition: 0.3s; }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + span { background: var(--accent); color: white; display: block; border-radius: 6px; padding: 10px; margin: -10px; }
+        input[type="text"], input[type="password"] { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; }
+        .btn-login { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; }
+        .btn-login:hover { background: #34495e; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>تسجيل الدخول</h2>
+        <form>
+            <div class="toggle-group">
+                <label><input type="radio" name="user-type" value="client" checked> <span>أنا عميل</span></label>
+                <label><input type="radio" name="user-type" value="worker"> <span>أنا صنايعي</span></label>
+            </div>
+            <input type="text" placeholder="اسم المستخدم أو البريد" required>
+            <input type="password" placeholder="كلمة المرور" required>
+            <button type="submit" class="btn-login">دخول</button>
+        </form>
+        <p style="font-size: 0.9rem; margin-top: 1rem;">ليس لديك حساب؟ <a href="#" style="color: var(--accent);">سجل الآن</a></p>
+    </div>
+</body>
+</html>
