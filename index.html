@@ -1,220 +1,49 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>خدماتك</title>
-
-<style>
-*{box-sizing:border-box;font-family:Arial}
-body{
-margin:0;
-background:#f4f4f4;
-direction:rtl;
-}
-
-header{
-background:#111;
-color:#fff;
-padding:15px;
-text-align:center;
-font-size:20px;
-cursor:pointer;
-}
-
-.app{
-min-height:100vh;
-display:flex;
-flex-direction:column;
-}
-
-.screen{
-flex:1;
-padding:15px;
-display:none;
-}
-
-.screen.active{display:block}
-
-.card{
-background:#fff;
-border-radius:14px;
-padding:15px;
-margin-bottom:15px;
-box-shadow:0 4px 12px rgba(0,0,0,.1);
-}
-
-input,select{
-width:100%;
-padding:12px;
-margin-top:8px;
-border-radius:10px;
-border:1px solid #ccc;
-font-size:15px;
-}
-
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:12px;
-background:#111;
-color:#fff;
-font-size:16px;
-margin-top:10px;
-cursor:pointer;
-}
-
-button.alt{background:#666}
-button.warn{background:#b00020}
-
-nav{
-display:flex;
-border-top:1px solid #ddd;
-background:#fff;
-}
-
-nav button{
-flex:1;
-border-radius:0;
-background:#fff;
-color:#111;
-font-size:14px;
-border:none;
-padding:12px;
-}
-
-nav button.active{
-background:#111;
-color:#fff;
-}
-
-/* Map Mock */
-.map{
-height:160px;
-background:linear-gradient(45deg,#ccc,#eee);
-border-radius:12px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-color:#555;
-}
-
-/* Admin */
-#adminOverlay{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.85);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:999;
-}
-
-#adminBox{
-background:#fff;
-padding:20px;
-border-radius:14px;
-width:90%;
-max-width:400px;
-}
-
-.stat{
-background:#eee;
-padding:10px;
-border-radius:10px;
-margin:6px 0;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>منصة محمد للصنايعية</title>
+    <style>
+        /* هنا الألوان والتنسيق - متعدلش هنا إلا لما تكون عايز تغير لون أو شكل */
+        body { background: #0b1120; color: white; font-family: sans-serif; text-align: center; }
+        .screen { display: none; padding: 20px; } /* كل الشاشات مخفية في البداية */
+        .active { display: block; } /* الشاشة النشطة بس هي اللي بتظهر */
+        .card { background: #1e293b; border-radius: 15px; padding: 20px; margin: 10px; border: 1px solid #f59e0b; }
+        button { background: #f59e0b; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; }
+    </style>
 </head>
-
 <body>
 
-<header id="logo">خدماتك</header>
+    <div id="screen-start" class="screen active">
+        <div class="card">
+            <h1>منصة الصنايعية</h1>
+            <button onclick="changeScreen('screen-client')">أنا عميل</button>
+            <button onclick="changeScreen('screen-worker')">أنا صنايعي</button>
+        </div>
+    </div>
 
-<div class="app">
+    <div id="screen-client" class="screen">
+        <div class="card">
+            <h2>اطلب صنايعي</h2>
+            <input type="text" placeholder="اكتب مشكلتك هنا...">
+            <button onclick="changeScreen('screen-start')">رجوع</button>
+        </div>
+    </div>
 
-<!-- تسجيل الدخول -->
-<div class="screen active" id="login">
-<div class="card">
-<h3>تسجيل الدخول</h3>
-<select id="role">
-<option value="client">عميل</option>
-<option value="worker">صنايعي</option>
-</select>
-<input placeholder="الاسم">
-<button onclick="login()">دخول</button>
-</div>
-</div>
+    <div id="screen-worker" class="screen">
+        <div class="card">
+            <h2>لوحة الفني</h2>
+            <p>المديونية الحالية: <span style="color:red">150 ج</span></p>
+            <button onclick="changeScreen('screen-start')">خروج</button>
+        </div>
+    </div>
 
-<!-- عميل -->
-<div class="screen" id="client">
-<div class="card">
-<h3>طلب خدمة</h3>
-<select>
-<option>سباك</option>
-<option>كهربائي</option>
-<option>نجار</option>
-<option>نقاش</option>
-</select>
-<input placeholder="وصف المشكلة">
-<input type="number" id="price" placeholder="السعر المقترح">
-<button onclick="createOrder()">إرسال الطلب</button>
-</div>
-
-<div class="card" id="clientOrder" style="display:none">
-<h3>طلبك الحالي</h3>
-<p>الحالة: قيد التنفيذ</p>
-<div class="map">تحرك الصنايعي (تتبع)</div>
-<button class="warn" onclick="finish()">إنهاء الطلب</button>
-</div>
-</div>
-
-<!-- صنايعي -->
-<div class="screen" id="worker">
-<div class="card">
-<h3>طلب متاح</h3>
-<p>سباك – عرض العميل: 200 جنيه</p>
-<input type="number" placeholder="عرض سعر مضاد">
-<button onclick="accept()">قبول بالسعر</button>
-</div>
-</div>
-
-<!-- تنقل -->
-<nav>
-<button id="navClient" onclick="go('client')">العميل</button>
-<button id="navWorker" onclick="go('worker')">الصنايعي</button>
-</nav>
-
-</div>
-
-<!-- Admin -->
-<div id="adminOverlay">
-<div id="adminBox">
-
-<div id="adminLogin">
-<h3>دخول الأدمن</h3>
-<input type="password" id="adminPass">
-<button onclick="adminLogin()">دخول</button>
-</div>
-
-<div id="adminDash" style="display:none">
-<h3>لوحة التحكم</h3>
-<div class="stat">👤 العملاء: 15</div>
-<div class="stat">🛠 الصنايعية: 7</div>
-<div class="stat">📦 الطلبات: 23</div>
-<div class="stat">💰 العمولة: 20%</div>
-<button class="alt" onclick="closeAdmin()">خروج</button>
-</div>
-
-</div>
-</div>
-
-<script>
-let clicks=0,timer;
-
-logo.onclick=()=>{
-clicks++;
-if(clicks===1) ti
+    <script>
+        // دي الوظيفة اللي بتبدل بين الشاشات من غير ما تمسح الكود
+        function changeScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
