@@ -1,208 +1,117 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - الإصدار النهائي</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 70px; }
-        .screen { display: none; min-height: 100vh; animation: fadeIn 0.3s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        header { background: #161e2e; padding: 15px; display: flex; justify-content: space-around; border-bottom: 2px solid var(--accent); position: sticky; top:0; z-index:100; }
-        header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
-        .card { background: var(--card); padding: 15px; border-radius: 15px; margin: 12px; border: 1px solid #334155; }
-        .btn { border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
-        .map-container { height: 220px; border-radius: 12px; border: 2px solid var(--accent); margin-top: 10px; }
-        .job-item { background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-right: 5px solid var(--blue); }
-        .history-card { background: #0f172a; border-radius: 8px; padding: 10px; margin-top: 10px; max-height: 150px; overflow-y: auto; }
-        .h-item { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 5px 0; border-bottom: 1px solid #334155; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة الصنايعية</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; font-family: Arial, Helvetica, sans-serif; direction:rtl; }
+body { background:linear-gradient(180deg,#020617,#0f172a); color:#fff; display:flex; flex-direction:column; min-height:100dvh; }
+
+header {
+    height:60px; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:bold; background:#020617; border-bottom:1px solid #1e293b;
+}
+
+.app { flex:1; display:flex; align-items:center; justify-content:center; padding:20px; }
+
+.screen { width:100%; max-width:420px; background:#020617; border-radius:22px; padding:30px 20px; box-shadow:0 30px 60px rgba(0,0,0,.6); display:none; flex-direction:column; }
+
+.screen.active { display:flex; }
+
+.screen h1 { text-align:center; margin-bottom:25px; font-size:22px; }
+
+input {
+    width:100%; padding:14px; margin-bottom:15px;
+    border:none; border-radius:14px; background:#1e293b; color:#fff; font-size:16px;
+}
+
+button {
+    width:100%; padding:16px; border:none; border-radius:16px;
+    background:#2563eb; font-size:17px; font-weight:bold; color:#fff; cursor:pointer;
+}
+
+.bottom-bar {
+    height:70px; background:#020617; border-top:1px solid #1e293b; display:flex;
+}
+
+.bottom-bar button {
+    flex:1; background:none; border:none; color:#94a3b8; font-size:14px; cursor:pointer;
+}
+
+.bottom-bar button.active { color:#fff; }
+</style>
 </head>
+
 <body>
 
-<div id="splash" class="screen active">
-    <div style="text-align: center; padding: 40px 20px;">
-        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" style="width:130px; border-radius:50%; border:4px solid var(--accent);" onclick="adminAccess()">
-        <h1>منصة الصنايعية</h1>
-        <p>Live GPS | كشف حساب | تأمين عمولات</p>
-        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">أنا عميل (أحتاج خدمة)</button>
-        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">أنا فني (أبحث عن عمل)</button>
-    </div>
-</div>
+<header>منصة الصنايعية</header>
 
-<div id="client-dash" class="screen">
-    <header><a onclick="show('splash')">خروج</a></header>
-    <div class="card">
-        <h3>طلب فني متخصص</h3>
-        <select id="cType"><option value="سباكة">سباكة</option><option value="نجارة">نجارة</option><option value="كهرباء">كهرباء</option></select>
-        <textarea id="cDesc" placeholder="اشرح المشكلة..."></textarea>
-        <div id="map-client" class="map-container"></div>
-        <button class="btn" style="background: var(--accent);" onclick="submitJob()">نشر الطلب (تفعيل التتبع)</button>
-    </div>
-</div>
+<div class="app">
 
-<div id="reg-worker" class="screen">
-    <div class="card">
-        <h3>تسجيل فني جديد</h3>
-        <input type="text" id="wName" placeholder="الاسم بالكامل">
-        <select id="wSpec"><option value="سباكة">سباك</option><option value="نجارة">نجار</option><option value="كهرباء">كهربائي</option></select>
-        <input type="number" id="wID" placeholder="رقم البطاقة (14 رقم)">
-        <button class="btn" style="background: var(--blue); color:white;" onclick="loginWorker()">بدء العمل</button>
+    <!-- شاشة تسجيل دخول العميل -->
+    <div class="screen active" id="loginScreen">
+        <h1>تسجيل الدخول / جديد</h1>
+        <input type="text" placeholder="اسم المستخدم" id="username">
+        <input type="password" placeholder="كلمة المرور" id="password">
+        <button onclick="loginUser()">تسجيل دخول</button>
+        <button onclick="switchScreen('requestScreen')">تسجيل جديد كعميل</button>
     </div>
-</div>
 
-<div id="worker-dash" class="screen">
-    <header><a onclick="show('worker-wallet')">المحفظة 💰</a><a onclick="show('splash')">خروج</a></header>
-    <div class="card">
-        <div id="debt-lock" style="display:none; text-align:center;">
-            <h2 style="color:var(--danger)">⚠️ الحساب متوقف</h2>
-            <p>مديونيتك تجاوزت 1000 ج. يرجى سداد العمولة لتتمكن من استلام طلبات جديدة.</p>
-            <button class="btn" style="background:var(--success)" onclick="show('worker-wallet')">سداد الآن</button>
+    <!-- شاشة طلب خدمة -->
+    <div class="screen" id="requestScreen">
+        <h1>طلب خدمة</h1>
+        <input type="text" placeholder="نوع الخدمة" id="serviceType">
+        <input type="text" placeholder="العنوان" id="serviceAddress">
+        <input type="text" placeholder="تفاصيل إضافية" id="serviceDetails">
+        <button onclick="submitRequest()">إرسال الطلب</button>
+    </div>
+
+    <!-- شاشة عرض الطلبات للصنايعي -->
+    <div class="screen" id="workerScreen">
+        <h1>الطلبات المتاحة</h1>
+        <div class="card" id="requestsList">
+            <p>لا توجد طلبات حالياً</p>
         </div>
-        <div id="worker-active">
-            <p>الفني: <b id="displayWName"></b> | التخصص: <b id="displayWSpec" style="color:var(--accent)"></b></p>
-            <hr>
-            <div id="jobList"></div>
-        </div>
+        <button onclick="switchScreen('requestScreen')">رجوع</button>
     </div>
+
 </div>
 
-<div id="job-detail" class="screen">
-    <div class="card">
-        <h3>مهمة قيد التنفيذ 🛠️</h3>
-        <p id="detailDesc"></p>
-        <div id="map-track" class="map-container"></div>
-        <button class="btn" style="background: #25D366; color:white;" onclick="window.open('https://wa.me/201020744825')">تواصل واتساب</button>
-        <button class="btn" style="background: var(--danger); color:white;" onclick="window.open('https://wa.me/201020744825?text=SOS_REPORT')">بلاغ طوارئ SOS 🚨</button>
-        <button class="btn" style="background: var(--success); color:white;" onclick="finishJob()">تم إنهاء المهمة</button>
-    </div>
+<!-- Bottom Navigation -->
+<div class="bottom-bar">
+    <button class="active" onclick="switchScreen('requestScreen')">الرئيسية</button>
+    <button onclick="switchScreen('workerScreen')">الطلبات</button>
+    <button onclick="switchScreen('loginScreen')">حسابي</button>
 </div>
 
-<div id="worker-wallet" class="screen">
-    <div class="card">
-        <h3>المحفظة وكشف الحساب</h3>
-        <p>إجمالي المديونية: <b id="debtVal" style="color:var(--danger)">150</b> ج</p>
-        <div class="history-card">
-            <p style="font-size:0.7rem; color:var(--accent)">سجل العمليات (Transaction History):</p>
-            <div id="historyList">
-                <div class="h-item"><span>رسوم فتح حساب</span><span>150- ج</span></div>
-            </div>
-        </div>
-        <p style="margin-top:15px;">انستا باي: <b>01020744825</b></p>
-        <button class="btn" onclick="show('worker-dash')">رجوع</button>
-    </div>
-</div>
-
-<div id="admin-dash" class="screen">
-    <header style="background:var(--danger)"><span>الإدارة (Mohamed214@)</span><a onclick="show('splash')">خروج</a></header>
-    <div class="card">
-        <h3>كشف مديونيات الفنيين</h3>
-        <div id="adminWList">
-            <div style="display:flex; justify-content:space-between; padding:10px; background:#0f172a;">
-                <span id="adminWName">الصنايعي</span>
-                <button onclick="clearDebt()" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:5px;">سدد</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    let db = []; 
-    let worker = { name: "", spec: "", debt: 150 };
+// التنقل بين الشاشات
+function switchScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
 
-    function show(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(id === 'client-dash' || id === 'job-detail') initLiveMap(id === 'client-dash' ? 'map-client' : 'map-track');
-        if(id === 'worker-dash') checkDebt();
-    }
+    // تحديث Bottom Bar
+    document.querySelectorAll('.bottom-bar button').forEach(btn => btn.classList.remove('active'));
+    if(screenId === 'requestScreen') document.querySelectorAll('.bottom-bar button')[0].classList.add('active');
+    if(screenId === 'workerScreen') document.querySelectorAll('.bottom-bar button')[1].classList.add('active');
+    if(screenId === 'loginScreen') document.querySelectorAll('.bottom-bar button')[2].classList.add('active');
+}
 
-    function initLiveMap(divId) {
-        setTimeout(() => {
-            navigator.geolocation.getCurrentPosition(pos => {
-                let coords = [pos.coords.latitude, pos.coords.longitude];
-                var map = L.map(divId).setView(coords, 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                L.marker(coords).addTo(map).bindPopup("الموقع الحالي").openPopup();
-            }, () => alert("برجاء تفعيل GPS"));
-        }, 400);
-    }
+// Placeholder JS للوظائف
+function loginUser() {
+    const name = document.getElementById('username').value;
+    alert('تم تسجيل الدخول: ' + name + '\nلاحقًا يتم الربط مع فايربيس');
+}
 
-    function submitJob() {
-        let type = document.getElementById('cType').value;
-        let desc = document.getElementById('cDesc').value;
-        if(!desc) return alert("اكتب وصف المشكلة");
-        db.push({ id: Date.now(), type, desc, price: 300 });
-        alert("تم نشر طلبك بموقعك الحالي!"); show('splash');
-    }
-
-    function loginWorker() {
-        worker.name = document.getElementById('wName').value;
-        worker.spec = document.getElementById('wSpec').value;
-        if(!worker.name) return alert("ادخل الاسم");
-        document.getElementById('displayWName').innerText = worker.name;
-        document.getElementById('displayWSpec').innerText = worker.spec;
-        document.getElementById('adminWName').innerText = worker.name;
-        show('worker-dash');
-    }
-
-    function checkDebt() {
-        if(worker.debt >= 1000) {
-            document.getElementById('debt-lock').style.display = 'block';
-            document.getElementById('worker-active').style.display = 'none';
-        } else {
-            document.getElementById('debt-lock').style.display = 'none';
-            document.getElementById('worker-active').style.display = 'block';
-            renderJobs();
-        }
-    }
-
-    function renderJobs() {
-        let list = document.getElementById('jobList');
-        list.innerHTML = "";
-        let filtered = db.filter(j => (worker.spec === "سباك" && j.type === "سباكة") || (worker.spec === "نجار" && j.type === "نجارة") || (worker.spec === "كهربائي" && j.type === "كهرباء"));
-        if(filtered.length === 0) { list.innerHTML = "لا توجد طلبات قريبة حالياً"; return; }
-        filtered.forEach(j => {
-            list.innerHTML += `<div class="job-item"><p>${j.desc}</p><button class="btn" style="background:var(--accent)" onclick="acceptJob(${j.id})">قبول المهمة وتتبع العميل</button></div>`;
-        });
-    }
-
-    function acceptJob(id) {
-        let job = db.find(j => j.id === id);
-        document.getElementById('detailDesc').innerText = job.desc;
-        show('job-detail');
-    }
-
-    function finishJob() {
-        let commission = 60; // 20% من 300
-        worker.debt += commission;
-        document.getElementById('debtVal').innerText = worker.debt;
-        document.getElementById('historyList').innerHTML += `<div class="h-item"><span>عمولة مهمة</span><span>${commission}- ج</span></div>`;
-        alert("تم الإنهاء وتسجيل العمولة في كشف الحساب");
-        show('worker-dash');
-    }
-
-    function clearDebt() {
-        worker.debt = 0;
-        document.getElementById('debtVal').innerText = "0";
-        document.getElementById('historyList').innerHTML += `<div class="h-item"><span style="color:var(--success)">سداد مديونية</span><span>+0 ج</span></div>`;
-        alert("تم تصفير الحساب");
-    }
-
-    let clicks = 0;
-    function adminAccess() {
-        clicks++;
-        if(clicks === 3) {
-            let p = prompt("كلمة سر المدير:");
-            if(p === "Mohamed214@") show('admin-dash');
-            clicks = 0;
-        }
-    }
+function submitRequest() {
+    const type = document.getElementById('serviceType').value;
+    const addr = document.getElementById('serviceAddress').value;
+    const details = document.getElementById('serviceDetails').value;
+    alert(`تم إرسال الطلب:\nالخدمة: ${type}\nالعنوان: ${addr}\nالتفاصيل: ${details}\nلاحقًا يتم حفظه في فايربيس`);
+}
 </script>
+
 </body>
 </html>
