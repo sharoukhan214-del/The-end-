@@ -2,48 +2,151 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة محمد للصنايعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* هنا الألوان والتنسيق - متعدلش هنا إلا لما تكون عايز تغير لون أو شكل */
-        body { background: #0b1120; color: white; font-family: sans-serif; text-align: center; }
-        .screen { display: none; padding: 20px; } /* كل الشاشات مخفية في البداية */
-        .active { display: block; } /* الشاشة النشطة بس هي اللي بتظهر */
-        .card { background: #1e293b; border-radius: 15px; padding: 20px; margin: 10px; border: 1px solid #f59e0b; }
-        button { background: #f59e0b; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; }
+        :root { --main: #f59e0b; --bg: #0f172a; --card: #1e293b; --success: #22c55e; --danger: #ef4444; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 60px; }
+        .screen { display: none; padding: 20px; animation: fadeIn 0.4s; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #334155; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        .btn { background: var(--main); color: black; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
+        
+        /* تتبع وحركة */
+        .map-box { height: 200px; background: #334155; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px dashed var(--main); }
+        .chat-box { height: 250px; background: #0f172a; border-radius: 10px; padding: 10px; overflow-y: auto; border: 1px solid #334155; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 8px 12px; border-radius: 10px; max-width: 80%; }
+        .msg.sent { background: var(--main); color: black; align-self: flex-end; }
+        .msg.received { background: #334155; align-self: flex-start; }
+
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; }
+        @keyframes moveIcon { 0% { left: 10%; } 100% { left: 80%; } }
     </style>
 </head>
 <body>
 
-    <div id="screen-start" class="screen active">
+    <div id="scr-welcome" class="screen active">
+        <div style="text-align: center; margin-top: 50px;">
+            <i class="fas fa-tools fa-4x" style="color: var(--main);"></i>
+            <h1>منصة محمد</h1>
+            <p>اختر نوع الحساب للبدء</p>
+        </div>
         <div class="card">
-            <h1>منصة الصنايعية</h1>
-            <button onclick="changeScreen('screen-client')">أنا عميل</button>
-            <button onclick="changeScreen('screen-worker')">أنا صنايعي</button>
+            <button class="btn" onclick="nav('scr-client-auth')">أنا عميل (أبحث عن فني)</button>
+            <button class="btn" style="background:#475569; color:white; margin-top:10px;" onclick="nav('scr-worker-reg')">أنا صنايعي (أبحث عن شغل)</button>
         </div>
     </div>
 
-    <div id="screen-client" class="screen">
-        <div class="card">
-            <h2>اطلب صنايعي</h2>
-            <input type="text" placeholder="اكتب مشكلتك هنا...">
-            <button onclick="changeScreen('screen-start')">رجوع</button>
+    <div id="scr-client-auth" class="screen">
+        <div class="card" style="text-align: center;">
+            <h2>دخول العميل</h2>
+            <input type="tel" placeholder="رقم الموبايل">
+            <button class="btn" onclick="nav('scr-client-otp')">دخول / تسجيل</button>
         </div>
     </div>
 
-    <div id="screen-worker" class="screen">
-        <div class="card">
-            <h2>لوحة الفني</h2>
-            <p>المديونية الحالية: <span style="color:red">150 ج</span></p>
-            <button onclick="changeScreen('screen-start')">خروج</button>
+    <div id="scr-client-otp" class="screen">
+        <div class="card" style="text-align: center;">
+            <h2>تأكيد الكود (OTP)</h2>
+            <div style="display: flex; gap: 10px; justify-content: center; direction: ltr; margin: 20px 0;">
+                <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
+                <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
+                <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
+                <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
+            </div>
+            <button class="btn" onclick="nav('scr-client-order')">تأكيد</button>
         </div>
     </div>
+
+    <div id="scr-client-order" class="screen">
+        <h3>طلب فني جديد</h3>
+        <div class="card">
+            <select><option>سباك</option><option>كهربائي</option><option>نقاش</option></select>
+            <textarea placeholder="اشرح المشكلة.."></textarea>
+            <input type="number" placeholder="السعر المعروض (ج.م)">
+            <div class="map-box"><i class="fas fa-map-marker-alt" style="color:red;"></i><span style="margin-right:10px;">تم تحديد موقعك</span></div>
+            <button class="btn" style="margin-top:10px;" onclick="nav('scr-client-bids')">نشر الطلب</button>
+        </div>
+    </div>
+
+    <div id="scr-client-bids" class="screen">
+        <h3>العروض المتاحة</h3>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between;"><strong>الأسطى عبده</strong><span>180 ج</span></div>
+            <button class="btn" style="padding:5px; margin-top:10px;" onclick="nav('scr-client-chat')">قبول وتفاوض</button>
+        </div>
+    </div>
+
+    <div id="scr-client-chat" class="screen">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>الدردشة</h3>
+            <button onclick="nav('scr-client-track')" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:5px;">تتبع الفني</button>
+        </div>
+        <div class="chat-box">
+            <div class="msg received">أنا في الطريق يا فندم</div>
+            <div class="msg sent">تمام مستني حضرتك</div>
+        </div>
+        <input type="text" placeholder="اكتب رسالة...">
+    </div>
+
+    <div id="scr-client-track" class="screen">
+        <h3>متابعة الفني</h3>
+        <div class="map-box" style="height:300px;">
+            <div style="position:absolute; bottom:20%; left:10%; color:var(--main); animation: moveIcon 5s infinite linear;">
+                <i class="fas fa-motorcycle fa-2x"></i>
+            </div>
+            <i class="fas fa-home fa-2x" style="position:absolute; top:20%; right:20%; color:var(--success);"></i>
+        </div>
+        <button class="btn" style="margin-top:10px; background:var(--danger); color:white;" onclick="nav('scr-client-order')">إلغاء الطلب</button>
+    </div>
+
+    <div id="scr-client-profile" class="screen">
+        <div style="text-align:center;">
+            <div style="width:100px; height:100px; background:#334155; border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; border:3px solid var(--main); overflow:hidden; position:relative;">
+                <i class="fas fa-camera fa-2x"></i>
+                <input type="file" style="position:absolute; opacity:0;">
+            </div>
+            <h2>ملفي الشخصي</h2>
+        </div>
+        <div class="card"><input type="text" value="محمد أحمد"><button class="btn">حفظ</button></div>
+    </div>
+
+    <div id="scr-worker-reg" class="screen">
+        <div class="card">
+            <h2>تسجيل صنايعي</h2>
+            <input type="text" placeholder="الاسم من البطاقة">
+            <input type="number" placeholder="رقم البطاقة">
+            <select><option>سباك</option><option>كهربائي</option></select>
+            <p style="color:var(--main); font-size:0.8rem;">* مديونية افتتاحية 150 ج</p>
+            <button class="btn" onclick="nav('scr-worker-main')">تسجيل</button>
+        </div>
+    </div>
+
+    <div id="scr-worker-main" class="screen">
+        <div class="card" style="background:var(--danger); text-align:center;">مديونيتك: 150 ج</div>
+        <h3>طلبات قريبة منك</h3>
+        <div class="card">
+            <p>عميل يطلب سباكة (1.5 كم)</p>
+            <button class="btn" onclick="alert('تم قبول الطلب')">قبول</button>
+        </div>
+    </div>
+
+    <nav class="nav-bottom">
+        <div onclick="nav('scr-welcome')"><i class="fas fa-home"></i><br><small>الرئيسية</small></div>
+        <div onclick="nav('scr-client-order')"><i class="fas fa-plus"></i><br><small>طلب</small></div>
+        <div onclick="nav('scr-client-profile')"><i class="fas fa-user"></i><br><small>ملفي</small></div>
+    </nav>
 
     <script>
-        // دي الوظيفة اللي بتبدل بين الشاشات من غير ما تمسح الكود
-        function changeScreen(screenId) {
+        function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
         }
     </script>
 </body>
-</html>
+            </html>
