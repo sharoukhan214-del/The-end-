@@ -3,116 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - النسخة المعتمدة</title>
+    <title>منصة الصنايعية - النظام المتكامل</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 80px; }
-        
-        /* الهيدر المطور */
-        header { background: #161e2e; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
-        header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-
-        .section { display: none; padding: 15px; animation: fadeIn 0.4s; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 60px; }
+        .screen { display: none; min-height: 100vh; animation: fadeIn 0.4s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* واجهة الصورة (نفس اللي بعتها) */
-        .hero-card { 
-            background: linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.9)), 
-                        url('https://lan214-del.github.io/path-to-your-image.jpg'); /* استبدل بالرابط الحقيقي */
-            background-size: cover; padding: 40px 20px; border-radius: 20px; text-align: center; margin: 10px; border: 1px solid #334155;
-        }
-        .hero-img-main { width: 150px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
-
-        .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #334155; }
-        .btn { border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 12px; transition: 0.3s; }
-        
+        .card { background: var(--card); padding: 20px; border-radius: 15px; margin: 15px; border: 1px solid #334155; }
+        .btn { border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
         input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
-        
-        /* المحفظة والدفع */
-        .wallet-display { background: #0f172a; padding: 15px; border-radius: 10px; border-right: 5px solid var(--danger); }
+        #map { height: 250px; border-radius: 15px; margin-top: 10px; border: 2px solid var(--accent); }
     </style>
 </head>
 <body>
 
-<header>
-    <a onclick="show('home')">الرئيسية</a>
-    <a onclick="show('orders')">الطلبات</a>
-    <a onclick="show('wallet')">المحفظة 💰</a>
-    <a onclick="show('profile')">الملف الشخصي</a>
-</header>
-
-<div id="home" class="section active">
-    <div class="hero-card">
-        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img-main" alt="صنايعي">
-        <h1 style="margin: 0;">مرحباً بك في المنصة</h1>
-        <p style="color: #cbd5e0; margin: 15px 0;">نظام أمان يضمن حقك بالرقم القومي</p>
-        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">تسجيل عميل (بالموبايل)</button>
-        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">تسجيل صنايعي (بالموبايل والقومي)</button>
+<div id="splash" class="screen active">
+    <div style="text-align: center; padding: 50px 20px;">
+        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" style="width: 150px; border-radius: 50%; border: 4px solid var(--accent);">
+        <h1>منصة الصنايعية</h1>
+        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">دخول كعميل (موبايل)</button>
+        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">دخول كصنايعي (قومي + موبايل)</button>
     </div>
 </div>
 
-<div id="reg-worker" class="section">
+<div id="reg-client" class="screen">
     <div class="card">
-        <h3>توثيق حساب فني</h3>
-        <label>ارفع صورتك الشخصية:</label>
-        <input type="file" accept="image/*">
+        <h3>تسجيل دخول العميل</h3>
+        <input type="tel" id="clientPhone" placeholder="رقم الموبايل (10XXXXXXXX)">
+        <button class="btn" style="background: var(--success); color: white;" onclick="show('client-dash')">دخول وتقديم طلب</button>
+    </div>
+</div>
+
+<div id="client-dash" class="screen">
+    <div class="card">
+        <h3>تقديم طلب جديد</h3>
+        <input type="text" placeholder="ما هي المشكلة؟ (مثلاً: عطل كهرباء)">
+        <input type="number" id="offerPrice" placeholder="سعرك المقترح (جنيه)">
+        <button class="btn" style="background: var(--accent);" onclick="alert('تم نشر طلبك.. الصنايعية سيتفاوضون معك الآن')">نشر الطلب للتفاوض</button>
+    </div>
+    <div class="card">
+        <h4>تتبع الصنايعي (GPS) 📍</h4>
+        <div id="map"></div> </div>
+</div>
+
+<div id="reg-worker" class="screen">
+    <div class="card">
+        <h3>تسجيل فني (توثيق القومي)</h3>
         <input type="text" placeholder="الاسم بالكامل">
+        <input type="number" placeholder="الرقم القومي (14 رقم)">
         <input type="tel" placeholder="رقم الموبايل">
-        <input type="number" placeholder="الرقم القومي (14 رقم)" id="natIdInput">
-        <button class="btn" style="background: var(--success); color: white;" onclick="show('profile')">تفعيل الحساب</button>
+        <button class="btn" style="background: var(--blue); color: white;" onclick="show('worker-dash')">دخول لوحة العمولات</button>
     </div>
 </div>
 
-<div id="reg-client" class="section">
-    <div class="card">
-        <h3>طلب صنايعي جديد</h3>
-        <input type="text" placeholder="وصف المشكلة">
-        <input type="number" id="priceInput" placeholder="السعر المعروض (جنيه)">
-        <label>طريقة الدفع:</label>
-        <select id="paymentType">
-            <option value="cash">كاش (يدوي)</option>
-            <option value="online">دفع إلكتروني (محفظة/كارت)</option>
-        </select>
-        <button class="btn" onclick="alert('جاري البحث عن فنيين قريبين منك...')">ارسال الطلب</button>
+<div id="worker-dash" class="screen">
+    <div class="card" style="border-right: 5px solid var(--danger);">
+        <h3>المحفظة (عمولة 20%)</h3>
+        <p>المديونية الحالية: <span style="color: var(--danger);">0 جنيه</span></p>
+        <button class="btn" style="background: var(--success); color: white;">سداد العمولات</button>
     </div>
 </div>
 
-<div id="wallet" class="section">
-    <div class="card">
-        <h3>محفظة العمولات</h3>
-        <div class="wallet-display">
-            <p>مديونية المنصة الحالية:</p>
-            <h2 id="debtDisplay" style="color: var(--danger);">0 جنيه</h2>
-            <small>حد التوقف عن استقبال الشغل: 1000 ج</small>
-        </div>
-        <button class="btn" style="background: var(--success); color: white;">سداد المديونية الآن</button>
-    </div>
-</div>
-
-<div id="profile" class="section">
-    <div class="card" style="text-align: center;">
-        <img src="https://via.placeholder.com/100" style="border-radius: 50%; border: 2px solid var(--accent);">
-        <h3>الاسم الموثق بالبطاقة</h3>
-        <p>الرقم القومي: مسجل ✅</p>
-        <p>الحساب: فعال</p>
-        <button class="btn" style="background: var(--danger); color: white;" onclick="show('home')">تسجيل الخروج</button>
-    </div>
-</div>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     function show(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        if(id === 'client-dash') initMap(); // تشغيل الخريطة عند فتح واجهة العميل
     }
 
-    // منطق بسيط لحساب المديونية عند تجربة السيستم
-    let totalDebt = 0;
-    function simulateEndJob() {
-        let price = document.getElementById('priceInput').value || 500;
-        let commission = price * 0.20;
-        totalDebt += commission;
-        document.getElementById('debtDisplay').innerText = totalDebt.toFixed(0) + " جنيه";
+    function initMap() {
+        // إنشاء خريطة GPS حقيقية (افتراضياً على القاهرة)
+        var map = L.map('map').setView([30.0444, 31.2357], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([30.0444, 31.2357]).addTo(map).bindPopup('موقعك الحالي').openPopup();
     }
 </script>
 
