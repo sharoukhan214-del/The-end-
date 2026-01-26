@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - النظام المتكامل 2026</title>
+    <title>منصة الصنايعية - نظام الفلترة الذكي</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
@@ -11,17 +11,13 @@
         .screen { display: none; min-height: 100vh; animation: fadeIn 0.3s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
         header { background: #161e2e; padding: 15px; display: flex; justify-content: space-around; border-bottom: 2px solid var(--accent); position: sticky; top:0; z-index:100; }
         header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
-        
         .card { background: var(--card); padding: 15px; border-radius: 15px; margin: 15px; border: 1px solid #334155; }
         .btn { border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
-        
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
         .hero-img { width: 150px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; cursor: pointer; }
-        .map-container { height: 250px; border-radius: 15px; border: 2px solid var(--accent); margin: 10px 0; }
-        .wallet-box { background: #0f172a; padding: 15px; border-radius: 10px; border-right: 5px solid var(--danger); }
+        .job-tag { background: var(--blue); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -29,102 +25,84 @@
 <div id="splash" class="screen active">
     <div style="text-align: center; padding: 40px 20px;">
         <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img" onclick="adminAccess()">
-        <h1>مرحباً بك في المنصة</h1>
-        <p>نظام أمان بالرقم القومي وتتبع حي للمواقع</p>
-        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">دخول العميل (موبايل)</button>
-        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">دخول الصنايعي (قومي + موبايل)</button>
+        <h1>منصة الصنايعية</h1>
+        <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">أنا عميل (أحتاج خدمة)</button>
+        <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">أنا صنايعي (أبحث عن عمل)</button>
     </div>
 </div>
 
 <div id="client-dash" class="screen">
-    <header>
-        <a onclick="show('client-dash')">الطلبات</a>
-        <a onclick="show('client-profile')">حسابي</a>
-        <a onclick="show('splash')">خروج</a>
-    </header>
+    <header><a onclick="show('splash')">خروج</a></header>
     <div class="card">
-        <h3>تقديم طلب جديد</h3>
-        <div id="map-client" class="map-container"></div>
-        <input type="text" placeholder="وصف المشكلة (مثلاً: حنفية بتسرب)">
-        <input type="number" placeholder="السعر اللي هتدفعه">
-        <button class="btn" style="background: var(--accent);">ارسال الطلب وتتبع الفني</button>
+        <h3>اطلب فني متخصص</h3>
+        <select id="jobType">
+            <option value="سباكة">سباكة</option>
+            <option value="نجارة">نجارة</option>
+            <option value="كهرباء">كهرباء</option>
+        </select>
+        <input type="text" id="jobDesc" placeholder="وصف المشكلة">
+        <button class="btn" style="background: var(--accent);" onclick="alert('تم نشر طلبك المتخصص')">ارسال الطلب</button>
     </div>
 </div>
 
 <div id="worker-dash" class="screen">
-    <header>
-        <a onclick="show('worker-dash')">المهام</a>
-        <a onclick="show('worker-wallet')">المحفظة</a>
-        <a onclick="show('worker-profile')">حسابي</a>
-    </header>
+    <header><span>لوحة المهام</span> <a onclick="show('splash')">خروج</a></header>
     <div class="card">
-        <h3>طلبات قريبة منك (تتبع العميل)</h3>
-        <div id="map-worker" class="map-container"></div>
-        <button class="btn" style="background: var(--blue); color: white;">اتصال بالعميل 📞</button>
-    </div>
-</div>
-
-<div id="worker-wallet" class="screen">
-    <div class="card">
-        <h3>محفظة العمولات (20%)</h3>
-        <div class="wallet-box">
-            <p>مديونيتك الحالية:</p>
-            <h1 style="color: var(--danger); margin: 0;">0 جنيه</h1>
-            <small>تتوقف عن العمل عند 1000 ج</small>
+        <p>تخصصك الحالي: <span id="worker-specialty-display" style="color: var(--accent);"></span></p>
+        <hr border-color="#334155">
+        <h4>الأوردرات المتوفرة لتخصصك فقط:</h4>
+        <div id="filtered-jobs">
+            <div class="card" style="background: #0f172a; margin: 5px 0;">
+                <p><span class="job-tag">سباكة</span> حنفية مكسورة - المعادي</p>
+                <button class="btn" style="background: var(--success); font-size: 0.8rem;">قبول المهمة</button>
+            </div>
         </div>
-        <p style="margin-top: 20px;">للسداد، حول على انستا باي:</p>
-        <h2 style="color: var(--accent);">01020744825</h2>
-        <button class="btn" style="background: var(--success); color: white;">رفع صورة وصل التحويل</button>
     </div>
 </div>
 
 <div id="admin-dash" class="screen">
-    <header style="background: var(--danger);">
-        <span>لوحة تحكم المدير 👑</span>
-        <a onclick="show('splash')">خروج</a>
-    </header>
+    <header style="background: var(--danger);"><span>لوحة المدير (Mohamed214@)</span><a onclick="show('splash')">خروج</a></header>
     <div class="card">
-        <h3>طلبات التحويل بانتظار التأكيد</h3>
-        <div style="background: #0f172a; padding: 10px; border-radius: 10px; border: 1px solid var(--success);">
-            <p>الفني: محمود - المبلغ: 150 ج</p>
-            <button class="btn" style="background: var(--blue);">معاينة صورة الوصل 🖼️</button>
-            <button class="btn" style="background: var(--success); color: white;">تأكيد السداد وتصفير المديونية</button>
-        </div>
+        <h3>مراقبة التحويلات</h3>
+        <p>رقم انستا باي: 01020744825</p>
+        <button class="btn" style="background: var(--success);" onclick="alert('تم تصفير المديونية')">تأكيد سداد عينة</button>
     </div>
 </div>
 
-<div id="reg-client" class="screen"><div class="card"><h3>دخول العميل</h3><input type="tel" placeholder="رقم الموبايل"><button class="btn" style="background: var(--accent);" onclick="show('client-dash')">دخول</button></div></div>
-<div id="reg-worker" class="screen"><div class="card"><h3>دخول الصنايعي</h3><input type="number" placeholder="الرقم القومي (14 رقم)"><input type="tel" placeholder="رقم الموبايل"><button class="btn" style="background: var(--blue); color:white;" onclick="show('worker-dash')">دخول</button></div></div>
+<div id="reg-worker" class="screen">
+    <div class="card">
+        <h3>تسجيل صنايعي</h3>
+        <select id="workerSpecialty">
+            <option value="سباكة">سباك</option>
+            <option value="نجارة">نجار</option>
+            <option value="كهرباء">كهربائي</option>
+        </select>
+        <input type="number" placeholder="الرقم القومي">
+        <button class="btn" style="background: var(--blue); color:white;" onclick="saveWorkerSpecialty()">دخول</button>
+    </div>
+</div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     function show(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'client-dash') initMap('map-client');
-        if(id === 'worker-dash') initMap('map-worker');
-        window.scrollTo(0,0);
     }
 
-    function initMap(divId) {
-        setTimeout(() => {
-            var map = L.map(divId).setView([30.0444, 31.2357], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            L.marker([30.0444, 31.2357]).addTo(map).bindPopup('الموقع المستهدف').openPopup();
-        }, 200);
+    // حفظ تخصص الصنايعي للفلترة
+    function saveWorkerSpecialty() {
+        let specialty = document.getElementById('workerSpecialty').value;
+        document.getElementById('worker-specialty-display').innerText = specialty;
+        show('worker-dash');
     }
 
-    let clickCount = 0;
+    // سر المدير
+    let clicks = 0;
     function adminAccess() {
-        clickCount++;
-        if (clickCount === 3) {
-            let pass = prompt("أدخل كلمة مرور المدير:");
-            if (pass === "Mohamed214@") {
-                show('admin-dash');
-            } else {
-                alert("كلمة المرور خطأ!");
-            }
-            clickCount = 0;
+        clicks++;
+        if (clicks === 3) {
+            let p = prompt("كلمة مرور المدير:");
+            if (p === "Mohamed214@") show('admin-dash');
+            clicks = 0;
         }
     }
 </script>
