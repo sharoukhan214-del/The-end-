@@ -3,64 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - نظام الاستلام والتسليم</title>
+    <title>منصة الصنايعية - نظام الأمان</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #f59e0b; --success: #10b981; --danger: #ef4444; --blue: #3b82f6; }
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #f59e0b; --success: #10b981; --danger: #ef4444; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 60px; }
-        header { background: #1e293b; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+        header { background: #1e293b; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--accent); }
+        header a { color: white; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
         .section { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn { border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px; transition: 0.3s; }
-        .btn-receive { background: var(--blue); color: white; }
-        .btn-deliver { background: var(--success); color: white; display: none; } /* يظهر بعد الاستلام */
-        .status-text { color: var(--accent); font-weight: bold; margin-bottom: 10px; display: block; }
-        .wallet-info { background: #0f172a; padding: 10px; border-radius: 10px; border-right: 4px solid var(--accent); margin-bottom: 15px; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #334155; }
+        .btn { border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; background: var(--accent); color: #000; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #334155; color: white; box-sizing: border-box; }
+        .profile-header { text-align: center; border-bottom: 1px solid #475569; padding-bottom: 15px; margin-bottom: 15px; }
+        .profile-img-box { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent); margin: 0 auto 10px; overflow: hidden; background: #0f172a; display: flex; align-items: center; justify-content: center; }
+        .upload-btn { background: #475569; color: white; padding: 8px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; display: inline-block; }
     </style>
 </head>
 <body>
 
 <header>
     <a onclick="show('home')">الرئيسية</a>
-    <a onclick="show('worker-panel')">لوحة الصنايعي</a>
-    <a onclick="show('notifications')">الإشعارات 🔔</a>
+    <a onclick="show('order')">الطلبات</a>
+    <a onclick="show('profile-view')">الملف الشخصي</a>
 </header>
 
 <div id="home" class="section active">
-    <div class="card" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 200px;">
-            <h1>منصة الصنايعية</h1>
-            <p>نظام ذكي لضمان حق العميل والصنايعي. تفاوض على سعرك وتابع طلبك لحظة بلحظة.</p>
-        </div>
-        <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" style="width: 150px; border-radius: 15px; border: 2px solid var(--accent);">
+    <div class="card" style="text-align:center;">
+        <h2>مرحباً بك في المنصة</h2>
+        <p>نظام أمان يضمن حقك بالرقم القومي</p>
+        <button class="btn" onclick="show('reg-client')">تسجيل عميل (بالموبايل)</button>
+        <button class="btn" style="background:#3b82f6; color:white;" onclick="show('reg-worker')">تسجيل صنايعي (بالموبايل والقومي)</button>
     </div>
 </div>
 
-<div id="worker-panel" class="section">
+<div id="reg-client" class="section">
     <div class="card">
-        <h3>لوحة إدارة الطلبات 👤</h3>
-        <div class="wallet-info">
-            <p style="margin:0">إجمالي مديونية العمولة (20%):</p>
-            <h2 id="debtVal" style="margin:5px 0; color:var(--danger)">0 جنيه</h2>
-        </div>
-
-        <div id="orderBox" class="card" style="background: #334155; border: 1px solid #475569;">
-            <span id="orderStatus" class="status-text">حالة الأوردر: انتظار القبول</span>
-            <strong>طلب: إصلاح عطل كهرباء</strong>
-            <p>العميل: محمد - السعر المتفق عليه: <span id="finalPrice">500</span> ج</p>
-            
-            <button id="btnReceive" class="btn btn-receive" onclick="updateStatus('receive')">إستلام الأوردر (بدء التحرك)</button>
-            
-            <button id="btnDeliver" class="btn btn-deliver" onclick="updateStatus('deliver')">تسليم الأوردر (تم الانتهاء)</button>
-        </div>
+        <h3>تسجيل عميل</h3>
+        <label class="upload-btn">📸 ارفع صورتك الشخصية <input type="file" style="display:none"></label>
+        <input type="text" placeholder="الاسم">
+        <input type="tel" placeholder="رقم الموبايل">
+        <button class="btn" onclick="show('profile-view')">إنشاء الحساب</button>
     </div>
 </div>
 
-<div id="notifications" class="section">
+<div id="reg-worker" class="section">
     <div class="card">
-        <p>🔔 <strong>إشعار:</strong> العميل في انتظار وصولك الآن.</p>
+        <h3>تسجيل فني جديد</h3>
+        <p style="color:var(--danger); font-size: 0.8rem;">* الرقم القومي مطلوب لمنع التلاعب والتهرب من المديونية</p>
+        <label class="upload-btn">📸 ارفع صورتك المهنية <input type="file" style="display:none"></label>
+        <input type="text" placeholder="الاسم بالكامل (كما في البطاقة)">
+        <input type="tel" placeholder="رقم الموبايل الحالي">
+        <input type="number" id="id-card" placeholder="الرقم القومي (14 رقم)" required>
+        <select>
+            <option>سباك</option>
+            <option>كهربائي</option>
+            <option>نجار</option>
+        </select>
+        <button class="btn" style="background:var(--success); color:white;" onclick="show('profile-view')">تأكيد الهوية والتسجيل</button>
+    </div>
+</div>
+
+<div id="profile-view" class="section">
+    <div class="card">
+        <div class="profile-header">
+            <div class="profile-img-box">
+                <img src="https://via.placeholder.com/120" style="width:100%">
+            </div>
+            <h3 id="display-name">محمد أحمد</h3>
+            <span style="background:var(--success); padding:3px 10px; border-radius:15px; font-size:0.7rem;">حساب موثق ✅</span>
+        </div>
+        
+        <div class="info-row">
+            <p><strong>📱 رقم التليفون:</strong> 010XXXXXXXX</p>
+            <p><strong>🆔 الرقم القومي:</strong> 29XXXXXXXXXXXX (مسجل)</p>
+            <p><strong>⭐ التقييم العام:</strong> 4.9/5</p>
+            <p><strong>💰 محفظة المديونية:</strong> <span style="color:var(--danger)">150 جنيه</span></p>
+        </div>
+        
+        <button class="btn" style="background:#475569; color:white;">تعديل بيانات الملف</button>
+        <button class="btn" style="background:var(--danger); color:white; margin-top:20px;">تسجيل الخروج</button>
+    </div>
+</div>
+
+<div id="order" class="section">
+    <div class="card">
+        <h3>طلبات العمل المتاحة</h3>
+        <div style="background:#0f172a; padding:15px; border-radius:10px; margin-bottom:10px;">
+            <p><strong>أوردر سباكة - المعادي</strong></p>
+            <p>ميزانية العميل: 400 ج</p>
+            <button class="btn" style="padding:5px;">تقديم عرض سعر</button>
+        </div>
     </div>
 </div>
 
@@ -68,39 +101,6 @@
     function show(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-    }
-
-    let debt = 0;
-
-    function updateStatus(action) {
-        const statusTxt = document.getElementById('orderStatus');
-        const receiveBtn = document.getElementById('btnReceive');
-        const deliverBtn = document.getElementById('btnDeliver');
-        const price = parseFloat(document.getElementById('finalPrice').innerText);
-
-        if (action === 'receive') {
-            statusTxt.innerText = "حالة الأوردر: جاري التنفيذ (في الطريق)";
-            statusTxt.style.color = "#3b82f6";
-            receiveBtn.style.display = "none";
-            deliverBtn.style.display = "block";
-            alert("تم إستلام الأوردر.. العميل يقدر يتتبعك دلوقتي على الـ GPS.");
-        } 
-        else if (action === 'deliver') {
-            statusTxt.innerText = "حالة الأوردر: تم التسليم بنجاح ✅";
-            statusTxt.style.color = "#10b981";
-            deliverBtn.style.display = "none";
-            
-            // حساب العمولة 20%
-            let commission = price * 0.20;
-            debt += commission;
-            document.getElementById('debtVal').innerText = debt.toFixed(0) + " جنيه";
-            
-            alert("مبروك! تم تسليم الأوردر. تم إضافة " + commission + " ج عمولة للمنصة.");
-            
-            if (debt >= 1000) {
-                alert("⚠️ تنبيه: مديونيتك وصلت 1000 ج. يرجى السداد للاستمرار في استقبال الطلبات.");
-            }
-        }
     }
 </script>
 
