@@ -3,124 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - خدماتك بضغطة زر</title>
+    <title>منصة الصنايعية - الشاملة</title>
     <style>
-        /* CSS لتجميل الواجهة */
         :root {
-            --primary-color: #2c3e50;
+            --primary-bg: #1a202c;
+            --card-bg: #2d3748;
             --accent-color: #e67e22;
-            --bg-color: #f4f7f6;
-            --text-color: #333;
+            --text-white: #ffffff;
+            --input-bg: #374151;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--primary-bg);
+            color: var(--text-white);
             margin: 0;
             padding: 0;
-            color: var(--text-color);
         }
 
-        /* حل مشكلة التكرار: قائمة واحدة ثابتة */
+        /* القائمة العلوية */
         header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #242b38;
+            padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         nav {
             display: flex;
             justify-content: space-around;
-            align-items: center;
             max-width: 1000px;
             margin: 0 auto;
         }
 
         nav a {
-            color: white;
+            color: var(--text-white);
             text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        nav a:hover {
-            color: var(--accent-color);
-        }
+        nav a:hover { color: var(--accent-color); }
 
+        /* الأقسام - مخفية افتراضياً */
+        .section { display: none; padding: 20px; animation: fadeIn 0.5s; }
+        .active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* واجهة الرئيسية (Hero) */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            height: 350px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1581092916357-5896ebc48073?q=80&w=1470&auto=format&fit=crop');
             background-size: cover;
-            background-position: center;
-            height: 400px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
             text-align: center;
+            border-radius: 10px;
+            margin: 10px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .btn {
+        .btn-main {
             background-color: var(--accent-color);
             color: white;
-            padding: 10px 25px;
+            padding: 12px 30px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 1.2rem;
             cursor: pointer;
-            font-size: 1.1rem;
-            transition: transform 0.2s;
+            margin-top: 20px;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        footer {
+        /* واجهة طلب خدمة (الفورم) */
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 450px;
+            margin: 20px auto;
             text-align: center;
-            padding: 2rem;
-            font-size: 0.9rem;
-            color: #777;
         }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: var(--input-bg);
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn-send {
+            background: #3182ce;
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* واجهة حسابي (الدخول) */
+        .toggle-group {
+            display: flex;
+            background: #1a202c;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .toggle-btn { flex: 1; padding: 10px; cursor: pointer; border-radius: 8px; }
+        .active-toggle { background: var(--accent-color); }
     </style>
 </head>
 <body>
 
     <header>
         <nav>
-            <a href="#">الرئيسية</a>
-            <a href="#">طلب خدمة</a>
-            <a href="#">حسابي</a>
-            <a href="#">اتصل بنا</a>
+            <a onclick="showSection('home')">الرئيسية</a>
+            <a onclick="showSection('service')">طلب خدمة</a>
+            <a onclick="showSection('account')">حسابي</a>
+            <a onclick="showSection('contact')">اتصل بنا</a>
         </nav>
     </header>
 
-    <div class="hero">
-        <h1>منصة الصنايعية</h1>
-        <p>أفضل الحرفيين في خدمتك بأمانة وإتقان</p>
-        <button class="btn">اطلب صنايعي الآن</button>
+    <div id="home" class="section active">
+        <div class="hero">
+            <h1>منصة الصنايعية</h1>
+            <p>أفضل الحرفيين في خدمتك بأمانة وإتقان</p>
+            <button class="btn-main" onclick="showSection('service')">اطلب صنايعي الآن</button>
+        </div>
+        <div class="card" style="max-width: 800px; text-align: right;">
+            <h3>ليه تختار منصتنا؟</h3>
+            <p>إحنا بنوفرلك وقتك ومجهودك، وبنضمنلك صنايعي شاطر وبسعر عادل. سواء محتاج سباك، كهربائي، أو مبرمج، إحنا هنا عشانك.</p>
+        </div>
     </div>
 
-    <div class="container">
-        <h2>ليه تختار منصتنا؟</h2>
-        <p>إحنا بنوفرلك وقتك ومجهودك، وبنضمنلك صنايعي شاطر وبسعر عادل. سواء محتاج سباك، كهربائي، أو مبرمج، إحنا هنا عشانك.</p>
+    <div id="service" class="section">
+        <div class="card">
+            <h2>طلب خدمة</h2>
+            <input type="text" placeholder="نوع الخدمة">
+            <input type="text" placeholder="العنوان">
+            <textarea placeholder="تفاصيل إضافية" rows="4"></textarea>
+            <button class="btn-send">إرسال الطلب</button>
+        </div>
     </div>
 
-    <footer>
-        <p>جميع الحقوق محفوظة © 2026 - محمد المبرمج</p>
-    </footer>
+    <div id="account" class="section">
+        <div class="card">
+            <h2>تسجيل الدخول</h2>
+            <div class="toggle-group">
+                <div class="toggle-btn active-toggle">أنا عميل</div>
+                <div class="toggle-btn">أنا صنايعي</div>
+            </div>
+            <input type="text" placeholder="البريد الإلكتروني">
+            <input type="password" placeholder="كلمة المرور">
+            <button class="btn-send" style="background: var(--primary-bg);">دخول</button>
+        </div>
+    </div>
 
+    <script>
+        function showSection(id) {
+            // إخفاء كل الأقسام
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // إظهار القسم المطلوب
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
 </body>
 </html>
