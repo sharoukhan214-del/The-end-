@@ -16,15 +16,12 @@
         input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
         .btn { background: var(--main); color: black; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; }
         
-        /* تتبع وحركة */
-        .map-box { height: 200px; background: #334155; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px dashed var(--main); }
-        .chat-box { height: 250px; background: #0f172a; border-radius: 10px; padding: 10px; overflow-y: auto; border: 1px solid #334155; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 8px 12px; border-radius: 10px; max-width: 80%; }
-        .msg.sent { background: var(--main); color: black; align-self: flex-end; }
-        .msg.received { background: #334155; align-self: flex-start; }
-
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; }
-        @keyframes moveIcon { 0% { left: 10%; } 100% { left: 80%; } }
+        .nav-bottom { 
+            position: fixed; bottom: 0; width: 100%; background: var(--card); 
+            display: none; /* مخفية في البداية */
+            justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; 
+        }
+        .nav-active { display: flex !important; } /* تظهر بعد التسجيل */
     </style>
 </head>
 <body>
@@ -45,98 +42,34 @@
         <div class="card" style="text-align: center;">
             <h2>دخول العميل</h2>
             <input type="tel" placeholder="رقم الموبايل">
-            <button class="btn" onclick="nav('scr-client-otp')">دخول / تسجيل</button>
+            <button class="btn" onclick="nav('scr-client-otp')">إرسال الكود</button>
         </div>
     </div>
 
     <div id="scr-client-otp" class="screen">
         <div class="card" style="text-align: center;">
-            <h2>تأكيد الكود (OTP)</h2>
+            <h2>تأكيد الكود</h2>
             <div style="display: flex; gap: 10px; justify-content: center; direction: ltr; margin: 20px 0;">
                 <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
                 <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
                 <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
                 <input type="text" maxlength="1" style="width: 40px; text-align: center; font-size: 1.2rem;">
             </div>
-            <button class="btn" onclick="nav('scr-client-order')">تأكيد</button>
+            <button class="btn" onclick="activateClient()">تأكيد ودخول</button>
         </div>
     </div>
 
     <div id="scr-client-order" class="screen">
         <h3>طلب فني جديد</h3>
         <div class="card">
-            <select><option>سباك</option><option>كهربائي</option><option>نقاش</option></select>
-            <textarea placeholder="اشرح المشكلة.."></textarea>
-            <input type="number" placeholder="السعر المعروض (ج.م)">
-            <div class="map-box"><i class="fas fa-map-marker-alt" style="color:red;"></i><span style="margin-right:10px;">تم تحديد موقعك</span></div>
-            <button class="btn" style="margin-top:10px;" onclick="nav('scr-client-bids')">نشر الطلب</button>
-        </div>
-    </div>
-
-    <div id="scr-client-bids" class="screen">
-        <h3>العروض المتاحة</h3>
-        <div class="card">
-            <div style="display:flex; justify-content:space-between;"><strong>الأسطى عبده</strong><span>180 ج</span></div>
-            <button class="btn" style="padding:5px; margin-top:10px;" onclick="nav('scr-client-chat')">قبول وتفاوض</button>
-        </div>
-    </div>
-
-    <div id="scr-client-chat" class="screen">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3>الدردشة</h3>
-            <button onclick="nav('scr-client-track')" style="background:var(--success); color:white; border:none; padding:5px 10px; border-radius:5px;">تتبع الفني</button>
-        </div>
-        <div class="chat-box">
-            <div class="msg received">أنا في الطريق يا فندم</div>
-            <div class="msg sent">تمام مستني حضرتك</div>
-        </div>
-        <input type="text" placeholder="اكتب رسالة...">
-    </div>
-
-    <div id="scr-client-track" class="screen">
-        <h3>متابعة الفني</h3>
-        <div class="map-box" style="height:300px;">
-            <div style="position:absolute; bottom:20%; left:10%; color:var(--main); animation: moveIcon 5s infinite linear;">
-                <i class="fas fa-motorcycle fa-2x"></i>
-            </div>
-            <i class="fas fa-home fa-2x" style="position:absolute; top:20%; right:20%; color:var(--success);"></i>
-        </div>
-        <button class="btn" style="margin-top:10px; background:var(--danger); color:white;" onclick="nav('scr-client-order')">إلغاء الطلب</button>
-    </div>
-
-    <div id="scr-client-profile" class="screen">
-        <div style="text-align:center;">
-            <div style="width:100px; height:100px; background:#334155; border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; border:3px solid var(--main); overflow:hidden; position:relative;">
-                <i class="fas fa-camera fa-2x"></i>
-                <input type="file" style="position:absolute; opacity:0;">
-            </div>
-            <h2>ملفي الشخصي</h2>
-        </div>
-        <div class="card"><input type="text" value="محمد أحمد"><button class="btn">حفظ</button></div>
-    </div>
-
-    <div id="scr-worker-reg" class="screen">
-        <div class="card">
-            <h2>تسجيل صنايعي</h2>
-            <input type="text" placeholder="الاسم من البطاقة">
-            <input type="number" placeholder="رقم البطاقة">
             <select><option>سباك</option><option>كهربائي</option></select>
-            <p style="color:var(--main); font-size:0.8rem;">* مديونية افتتاحية 150 ج</p>
-            <button class="btn" onclick="nav('scr-worker-main')">تسجيل</button>
+            <textarea placeholder="وصف المشكلة.."></textarea>
+            <input type="number" placeholder="السعر المعروض">
+            <button class="btn">نشر الطلب</button>
         </div>
     </div>
 
-    <div id="scr-worker-main" class="screen">
-        <div class="card" style="background:var(--danger); text-align:center;">مديونيتك: 150 ج</div>
-        <h3>طلبات قريبة منك</h3>
-        <div class="card">
-            <p>عميل يطلب سباكة (1.5 كم)</p>
-            <button class="btn" onclick="alert('تم قبول الطلب')">قبول</button>
-        </div>
-    </div>
-
-    <nav class="nav-bottom">
-        <div onclick="nav('scr-welcome')"><i class="fas fa-home"></i><br><small>الرئيسية</small></div>
+    <nav id="main-nav" class="nav-bottom">
         <div onclick="nav('scr-client-order')"><i class="fas fa-plus"></i><br><small>طلب</small></div>
         <div onclick="nav('scr-client-profile')"><i class="fas fa-user"></i><br><small>ملفي</small></div>
     </nav>
@@ -145,8 +78,14 @@
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0, 0);
+        }
+
+        function activateClient() {
+            // 1. إظهار القائمة السفلية
+            document.getElementById('main-nav').classList.add('nav-active');
+            // 2. الانتقال لصفحة الطلب
+            nav('scr-client-order');
         }
     </script>
 </body>
-            </html>
+</html>
