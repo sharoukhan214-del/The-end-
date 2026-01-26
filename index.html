@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الصنايعية - النظام المتكامل النهائي</title>
+    <title>منصة الصنايعية - نظام الربط الذكي</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { --bg: #0b1120; --card: #1e293b; --accent: #f59e0b; --blue: #3b82f6; --success: #10b981; --danger: #ef4444; }
@@ -18,7 +18,7 @@
         input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; }
         .hero-img { width: 150px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; cursor: pointer; }
         .map-container { height: 200px; border-radius: 12px; border: 2px solid var(--accent); margin-top: 10px; }
-        .job-tag { background: var(--blue); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; margin-left: 5px; }
+        .job-item { background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid var(--blue); }
     </style>
 </head>
 <body>
@@ -27,119 +27,141 @@
     <div style="text-align: center; padding: 40px 20px;">
         <img src="https://img.freepik.com/free-photo/plumber-pointing-side_1368-1033.jpg" class="hero-img" onclick="adminAccess()">
         <h1>منصة الصنايعية</h1>
-        <p>GPS | أمان | عمولة 20%</p>
         <button class="btn" style="background: var(--accent);" onclick="show('reg-client')">دخول العميل</button>
         <button class="btn" style="background: var(--blue); color: white;" onclick="show('reg-worker')">دخول الصنايعي</button>
     </div>
 </div>
 
 <div id="client-dash" class="screen">
-    <header><a onclick="show('client-dash')">الطلبات</a><a onclick="show('splash')">خروج</a></header>
+    <header><a onclick="show('splash')">خروج</a></header>
     <div class="card">
-        <h3>اطلب فني متخصص</h3>
-        <select id="clientJobType">
+        <h3>طلب فني متخصص</h3>
+        <select id="jobType">
             <option value="سباكة">سباكة</option>
             <option value="نجارة">نجارة</option>
             <option value="كهرباء">كهرباء</option>
         </select>
+        <input type="text" id="jobDesc" placeholder="وصف المشكلة بالتفصيل">
+        <input type="number" id="jobPrice" placeholder="السعر المقترح">
         <div id="map-client" class="map-container"></div>
-        <input type="text" placeholder="وصف المشكلة">
-        <input type="number" placeholder="السعر المقترح">
-        <button class="btn" style="background: var(--accent);" onclick="alert('تم نشر طلبك المتخصص للفنيين')">نشر الطلب</button>
+        <button class="btn" style="background: var(--accent);" onclick="submitOrder()">نشر الطلب الآن</button>
     </div>
 </div>
 
 <div id="worker-dash" class="screen">
-    <header>
-        <a onclick="show('worker-dash')">المهام</a>
-        <a onclick="show('worker-wallet')">المحفظة</a>
-        <a onclick="show('splash')">خروج</a>
-    </header>
+    <header><a onclick="show('worker-wallet')">المحفظة</a><a onclick="show('splash')">خروج</a></header>
     <div class="card">
-        <p>أهلاً بك.. تخصصك: <span id="worker-spec-label" style="color:var(--accent)"></span></p>
-        <h4>طلبات تخصصك فقط القريبة منك:</h4>
-        <div id="filtered-jobs-list">
-            <div class="card" style="background: #0f172a; margin: 10px 0; border: 1px solid var(--blue);">
-                <p><span class="job-tag" id="current-job-tag">جاري التحميل...</span></p>
-                <div id="map-worker" class="map-container"></div>
-                <button class="btn" style="background: var(--success); color: white;">قبول المهمة واتصال 📞</button>
+        <p>تخصصك: <span id="workerSpecLabel" style="color:var(--accent)"></span></p>
+        <hr border-color="#334155">
+        <h4>الأوردرات المتاحة لتخصصك:</h4>
+        <div id="jobsList">
             </div>
-        </div>
     </div>
 </div>
 
 <div id="worker-wallet" class="screen">
     <div class="card">
-        <h3>المحفظة والمديونية</h3>
-        <div style="background: #0f172a; padding: 20px; border-radius: 10px; border-right: 5px solid var(--danger);">
-            <p>مديونيتك: <span id="debt-val" style="color:var(--danger)">150</span> جنيه</p>
-            <small>تتوقف عند 1000 ج</small>
-        </div>
-        <p style="margin-top:20px;">حول لـ انستا باي: <strong style="color:var(--accent)">01020744825</strong></p>
-        <button class="btn" style="background: var(--success); color: white;">رفع صورة الوصل</button>
+        <h3>المحفظة</h3>
+        <p>انستا باي: <strong>01020744825</strong></p>
+        <button class="btn" style="background: var(--success);" onclick="show('worker-dash')">رجوع</button>
     </div>
 </div>
 
 <div id="admin-dash" class="screen">
-    <header style="background: var(--danger);"><span>لوحة المدير (Mohamed214@)</span><a onclick="show('splash')">خروج</a></header>
-    <div class="card">
-        <h3>تأكيد التحويلات 💰</h3>
-        <div style="background:#0f172a; padding:10px; border-radius:10px; border:1px solid var(--success);">
-            <p>أحمد السباك (150 ج)</p>
-            <button class="btn" style="background: var(--success); color: white;" onclick="confirmPay()">تأكيد السداد وتصفير المديونية</button>
-        </div>
-    </div>
+    <header style="background: var(--danger);"><span>لوحة المدير</span><a onclick="show('splash')">خروج</a></header>
+    <div class="card"><button class="btn" style="background: var(--success);" onclick="alert('تم تصفير المديونية')">تأكيد سداد</button></div>
 </div>
 
 <div id="reg-worker" class="screen">
     <div class="card">
         <h3>تسجيل فني</h3>
-        <select id="workerSpecInput">
+        <select id="workerSpec">
             <option value="سباكة">سباك</option>
             <option value="نجارة">نجار</option>
             <option value="كهرباء">كهربائي</option>
         </select>
-        <input type="number" placeholder="الرقم القومي">
-        <button class="btn" style="background: var(--blue); color:white;" onclick="loginWorker()">دخول</button>
+        <button class="btn" style="background: var(--blue); color:white;" onclick="loginWorker()">دخول للوحة العمل</button>
+    </div>
+</div>
+
+<div id="reg-client" class="screen">
+    <div class="card">
+        <h3>تسجيل عميل</h3>
+        <input type="tel" placeholder="رقم الموبايل">
+        <button class="btn" style="background: var(--accent);" onclick="show('client-dash')">دخول للطلبات</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    // مخزن الطلبات (Simulation)
+    let allOrders = [
+        {type: 'سباكة', desc: 'تغيير خلاط مياه', price: 150},
+        {type: 'كهرباء', desc: 'تصليح لوحة مفاتيح', price: 200}
+    ];
+
     function show(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id.includes('dash')) initMap(id === 'client-dash' ? 'map-client' : 'map-worker');
+        if(id === 'client-dash') initMap('map-client');
+        if(id === 'worker-dash') renderJobs();
+    }
+
+    function submitOrder() {
+        let type = document.getElementById('jobType').value;
+        let desc = document.getElementById('jobDesc').value;
+        let price = document.getElementById('jobPrice').value;
+        
+        if(!desc || !price) { alert("أكمل البيانات!"); return; }
+        
+        allOrders.push({type: type, desc: desc, price: price});
+        alert("تم نشر أوردرك! الصنايعية المتخصصون سيشاهدونه الآن.");
+        show('splash');
+    }
+
+    function renderJobs() {
+        let spec = document.getElementById('workerSpec').value;
+        let list = document.getElementById('jobsList');
+        list.innerHTML = "";
+        
+        let myJobs = allOrders.filter(order => order.type === spec || (spec === "سباك" && order.type === "سباكة") || (spec === "نجار" && order.type === "نجارة") || (spec === "كهربائي" && order.type === "كهرباء"));
+        
+        if(myJobs.length === 0) {
+            list.innerHTML = "<p style='text-align:center; opacity:0.5;'>لا يوجد طلبات لتخصصك حالياً</p>";
+        }
+
+        myJobs.forEach(order => {
+            list.innerHTML += `
+                <div class="job-item">
+                    <p><strong>الوصف:</strong> ${order.desc}</p>
+                    <p><strong>السعر المقترح:</strong> ${order.price} جنيه</p>
+                    <button class="btn" style="background: var(--success); font-size:0.8rem;" onclick="alert('جاري فتح الخريطة للوصول للعميل...')">قبول الأوردر</button>
+                </div>
+            `;
+        });
     }
 
     function initMap(divId) {
         setTimeout(() => {
             var map = L.map(divId).setView([30.0444, 31.2357], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            L.marker([30.0444, 31.2357]).addTo(map).bindPopup('موقع العمل').openPopup();
+            L.marker([30.0444, 31.2357]).addTo(map);
         }, 200);
     }
 
     function loginWorker() {
-        let spec = document.getElementById('workerSpecInput').value;
-        document.getElementById('worker-spec-label').innerText = spec;
-        document.getElementById('current-job-tag').innerText = spec;
+        document.getElementById('workerSpecLabel').innerText = document.getElementById('workerSpec').value;
         show('worker-dash');
     }
 
-    let clicks = 0;
+    let adminClicks = 0;
     function adminAccess() {
-        clicks++;
-        if (clicks === 3) {
+        adminClicks++;
+        if (adminClicks === 3) {
             let p = prompt("باسورد المدير:");
             if (p === "Mohamed214@") show('admin-dash');
-            clicks = 0;
+            adminClicks = 0;
         }
-    }
-
-    function confirmPay() {
-        alert("تم تصفير المديونية بنجاح!");
-        document.getElementById('debt-val').innerText = "0";
     }
 </script>
 </body>
