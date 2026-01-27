@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNAY3Y PRO | العرض المباشر</title>
+    <title>SNAY3Y PRO | معاينة الواجهات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -11,97 +11,82 @@
         body { font-family: 'Cairo', sans-serif; background-color: #020617; color: #e2e8f0; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
         .gold-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; font-weight: 900; }
-        .section { display: none; }
-        .section.active { display: block; animation: pop 0.4s ease-out; }
-        @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .section { display: none; padding-bottom: 80px; }
+        .active { display: block; animation: fade 0.4s; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div onclick="secretAdminTrigger()" class="flex items-center gap-2 cursor-pointer select-none active:scale-95 transition-transform">
-            <div class="gold-btn w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
-                <i class="fas fa-crown"></i>
-            </div>
-            <h1 class="text-xl font-black tracking-tighter">SNAY3Y <span class="text-amber-500">PRO</span></h1>
+    <section id="scr-auth" class="section active p-6 text-center">
+        <h1 class="text-4xl font-black text-amber-500 mb-8">SNAY3Y PRO</h1>
+        <div class="space-y-4">
+            <button onclick="show('scr-client')" class="w-full p-6 gold-btn rounded-3xl text-xl">دخول كـ عميل (رؤية الشات والطلبات)</button>
+            <button onclick="show('scr-worker')" class="w-full p-6 bg-slate-800 rounded-3xl font-bold border border-slate-700">دخول كـ فني (رؤية المحفظة والشغل)</button>
+            <button onclick="show('scr-admin')" class="w-full p-6 bg-red-900/20 text-red-500 rounded-3xl font-bold border border-red-500/20">دخول الإدارة (رؤية الأرباح)</button>
         </div>
-        <div id="user-label" class="text-[10px] font-bold bg-slate-800 px-3 py-1 rounded-full border border-slate-700 text-amber-500">زائر</div>
-    </nav>
+    </section>
 
-    <main class="max-w-md mx-auto p-4">
+    <section id="scr-client" class="section p-4">
+        <h2 class="text-xl font-black mb-4">مرحباً يا عميل</h2>
+        <div class="glass p-4 rounded-3xl mb-6 border border-amber-500/20">
+            <h3 class="text-sm font-bold text-amber-500 mb-2 italic">متابعة طلبك الحالي</h3>
+            <div class="flex justify-between items-center text-xs">
+                <span>الحالة: <b class="text-green-400">الفني في الطريق</b></span>
+                <span>المسافة: 2.5 كم</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 mt-2 rounded-full overflow-hidden">
+                <div class="bg-amber-500 h-full w-2/3"></div>
+            </div>
+        </div>
+        <div class="glass p-4 rounded-3xl h-64 flex flex-col">
+            <p class="text-[10px] text-slate-500 text-center mb-2">دردشة مع الفني (أحمد الكهربائي)</p>
+            <div class="flex-1 space-y-2 overflow-y-auto text-xs">
+                <div class="bg-slate-800 p-2 rounded-lg ml-8 text-right">أهلاً يا فندم، العطل فين بالظبط؟</div>
+                <div class="bg-amber-500 text-black p-2 rounded-lg mr-8 text-left">في لوحة المفاتيح الرئيسية</div>
+            </div>
+            <div class="mt-2 flex gap-1">
+                <input type="text" placeholder="اكتب رسالة..." class="flex-1 bg-slate-900 p-2 rounded-xl text-xs outline-none">
+                <button class="bg-amber-500 text-black px-4 rounded-xl font-bold text-xs">إرسال</button>
+            </div>
+        </div>
+    </section>
 
-        <section id="scr-auth" class="section active py-10 space-y-8 text-center">
-            <h2 class="text-4xl font-black text-white">ابدأ الآن</h2>
-            <input type="tel" id="u-phone" placeholder="01XXXXXXXXX" class="w-full bg-slate-900 border-2 border-slate-800 p-5 rounded-3xl text-center text-2xl font-bold focus:border-amber-500 outline-none transition-all">
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="login('client')" class="gold-btn h-20 rounded-3xl shadow-lg">أنا عميل</button>
-                <button onclick="document.getElementById('worker-skills').style.display='block'" class="bg-slate-800 h-20 rounded-3xl font-bold border border-slate-700">أنا فني</button>
+    <section id="scr-worker" class="section p-4">
+        <div class="bg-gradient-to-r from-amber-500 to-amber-700 p-6 rounded-[2.5rem] text-black mb-6 shadow-xl">
+            <p class="text-[10px] font-black opacity-70 uppercase">رصيد محفظتك (صافي)</p>
+            <h4 class="text-4xl font-black">450.00 <span class="text-sm">ج.م</span></h4>
+            <div class="mt-4 flex justify-between text-[10px] font-bold">
+                <span>إجمالي مبيعاتك: 2500 ج.م</span>
+                <span>عمولة المنصة (20%): 500 ج.م</span>
             </div>
-            <div id="worker-skills" class="hidden glass p-4 rounded-3xl space-y-4">
-                <select id="u-skill" class="w-full p-4 bg-slate-950 rounded-xl border border-slate-800 outline-none">
-                    <option>سباك</option><option>كهربائي</option><option>نجار</option><option>تكييف</option>
-                </select>
-                <button onclick="login('worker')" class="w-full p-4 bg-white text-black font-black rounded-xl">دخول المحترفين</button>
-            </div>
-        </section>
+        </div>
+        <div class="glass h-40 rounded-3xl mb-6 relative overflow-hidden flex items-center justify-center">
+            <i class="fas fa-map-marked-alt text-4xl text-slate-700"></i>
+            <p class="absolute bottom-2 text-[10px] text-amber-500 font-bold">خريطة حية لمكان العميل (بعد الربط)</p>
+        </div>
+        <button onclick="show('scr-auth')" class="w-full p-4 bg-slate-800 rounded-2xl text-xs">رجوع</button>
+    </section>
 
-        <section id="scr-client" class="section space-y-6">
-            <div class="glass p-6 rounded-[2.5rem] border border-white/5 shadow-2xl">
-                <h3 class="font-black mb-4 flex items-center gap-2"><i class="fas fa-magic text-amber-500"></i> اطلب صيانة</h3>
-                <textarea class="w-full bg-slate-950 rounded-2xl p-4 h-28 border border-slate-800 mb-4" placeholder="اشرح المشكلة..."></textarea>
-                <button onclick="alert('تم الطلب!')" class="w-full p-4 gold-btn rounded-2xl">نشر الطلب</button>
-                <button onclick="location.reload()" class="w-full mt-2 text-xs text-slate-500">رجوع للخلف</button>
+    <section id="scr-admin" class="section p-4">
+        <h2 class="text-2xl font-black text-amber-500 mb-6">خزنة المنصة</h2>
+        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+            <div class="glass p-4 rounded-3xl"><p class="text-[10px]">عمولات مستحقة</p><h4 class="text-xl font-black text-green-400">1,200 ج.م</h4></div>
+            <div class="glass p-4 rounded-3xl"><p class="text-[10px]">بلاغات</p><h4 class="text-xl font-black text-red-500">2</h4></div>
+        </div>
+        <div class="glass rounded-3xl p-4">
+            <p class="text-xs font-bold mb-4 border-b border-white/5 pb-2">آخر التحويلات (InstaPay)</p>
+            <div class="space-y-3 text-[10px]">
+                <div class="flex justify-between"><span>محمد (سباك)</span><span class="text-green-400">+100 ج.م</span></div>
+                <div class="flex justify-between"><span>علي (كهربائي)</span><span class="text-green-400">+250 ج.م</span></div>
             </div>
-        </section>
-
-        <section id="scr-worker" class="section space-y-6">
-            <div class="glass p-5 rounded-3xl bg-gradient-to-r from-red-600/20 to-slate-900 border border-red-500/30">
-                <div class="flex justify-between items-center">
-                    <div><p class="text-[10px] font-black text-red-400">المديونية</p><h4 class="text-3xl font-black text-white">150 ج.م</h4></div>
-                    <div class="text-right"><p class="text-xs font-bold text-amber-500">01020744825</p></div>
-                </div>
-            </div>
-            <div class="glass p-4 rounded-2xl border-r-4 border-amber-500">
-                <p class="font-bold">مطلوب سباك لإصلاح حنفية</p>
-                <button onclick="alert('اتصل بالعميل')" class="mt-2 w-full bg-amber-500 text-black py-2 rounded-lg font-bold">قبول الشغل</button>
-            </div>
-            <button onclick="location.reload()" class="w-full text-xs text-slate-500 text-center">رجوع للخلف</button>
-        </section>
-
-        <section id="scr-admin" class="section space-y-6">
-            <h2 class="text-2xl font-black text-amber-500">لوحة القبطان محمد</h2>
-            <div class="glass p-6 rounded-3xl text-center">
-                <p class="text-slate-400">إجمالي ديونك عند الصنايعية</p>
-                <h4 class="text-4xl font-black text-green-400">2,450 ج.م</h4>
-            </div>
-            <button onclick="location.reload()" class="w-full text-xs text-slate-500 text-center">خروج من لوحة الإدارة</button>
-        </section>
-
-    </main>
+        </div>
+    </section>
 
     <script>
-        // دالة التنقل بين الشاشات
-        function showSection(id) {
+        function show(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-        }
-
-        function login(role) {
-            const ph = document.getElementById('u-phone').value;
-            if(ph.length < 11) return alert("دخل رقمك صح");
-            document.getElementById('user-label').innerText = role === 'client' ? 'عميل' : 'فني محترف';
-            showSection(role === 'client' ? 'scr-client' : 'scr-worker');
-        }
-
-        let clicks = 0;
-        function secretAdminTrigger() {
-            clicks++;
-            if(clicks === 5) {
-                const p = prompt("باسورد المدير:");
-                if(p === "Mohamed214@") showSection('scr-admin');
-                clicks = 0;
-            }
-            setTimeout(() => clicks = 0, 2000);
         }
     </script>
 </body>
