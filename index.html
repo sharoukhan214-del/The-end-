@@ -3,118 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة محمد - لوحة التحكم</title>
+    <title>منصة محمد للصنايعية - الإصدار الشامل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --main: #f59e0b; --bg: #0f172a; --card: #1e293b; --success: #22c55e; --danger: #ef4444; --admin: #8b5cf6; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 70px; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 70px; overflow-x: hidden; }
+        
+        /* الأنظمة الأساسية */
         .screen { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #334155; margin-bottom: 15px; }
-        .btn { background: var(--main); color: black; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        /* ستايل لوحة التحكم */
-        .admin-stat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-box { background: var(--admin); padding: 15px; border-radius: 15px; text-align: center; }
-        .stat-box span { font-size: 1.5rem; font-weight: bold; }
-        
-        .worker-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #334155; }
-        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; }
-        .status-active { background: var(--success); }
-        .status-blocked { background: var(--danger); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; font-size: 1rem; }
+        .btn { background: var(--main); color: black; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn:active { transform: scale(0.95); }
 
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card); display: none; justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; z-index: 1000; }
+        /* المحفظة والحظر */
+        .wallet-amount { font-size: 2.5rem; font-weight: bold; color: var(--danger); text-align: center; }
+        .alert-box { background: rgba(239, 68, 68, 0.2); border: 2px solid var(--danger); padding: 15px; border-radius: 15px; color: #fecaca; margin-bottom: 20px; text-align: center; }
+
+        /* الإشعارات */
+        .notif-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #334155; position: relative; }
+        .notif-item i { font-size: 1.5rem; color: var(--main); }
+        .notif-dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; position: absolute; left: 15px; top: 15px; }
+
+        /* لوحة تحكم المدير */
+        .admin-stat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: var(--admin); padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .stat-box span { font-size: 1.5rem; font-weight: bold; display: block; }
+
+        /* القائمة السفلية */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card); display: none; justify-content: space-around; padding: 12px 0; border-top: 1px solid #334155; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
         .nav-active { display: flex !important; }
-        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; font-size: 0.7rem; }
+        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; font-size: 0.75rem; position: relative; flex: 1; }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; display: block; }
+        .badge { position: absolute; top: -5px; right: 25%; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.6rem; }
+
+        /* الشات */
+        .chat-container { height: 350px; background: #0f172a; border-radius: 15px; border: 1px solid #334155; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-msg { padding: 10px; margin: 5px; border-radius: 10px; max-width: 80%; }
+        .msg-in { background: #334155; align-self: flex-start; }
     </style>
 </head>
 <body>
 
     <div id="scr-welcome" class="screen active">
-        <div style="text-align: center; margin-top: 50px;">
-            <i class="fas fa-tools fa-4x" style="color: var(--main);"></i>
-            <h1>منصة محمد</h1>
-            <p>رزقك وحل مشاكلك في ضغطة زرار</p>
+        <div style="text-align: center; margin-top: 60px;">
+            <i class="fas fa-tools fa-5x" style="color: var(--main); text-shadow: 0 0 20px rgba(245,158,11,0.5);"></i>
+            <h1 style="font-size: 2.5rem; margin-top: 10px;">منصة محمد</h1>
+            <p style="color: #94a3b8;">كل الصنايعية في جيبك</p>
         </div>
+        <div class="card" style="margin-top: 40px;">
+            <button class="btn" onclick="nav('scr-client-auth')">أنا عميل (أبحث عن فني)</button>
+            <button class="btn" style="background:#475569; color:white;" onclick="nav('scr-worker-reg')">أنا صنايعي (أبحث عن شغل)</button>
+            <button class="btn" style="background:var(--admin); color:white; margin-top:40px;" onclick="activateUser('admin', 'scr-admin-dashboard')">دخول المدير (محمد)</button>
+        </div>
+    </div>
+
+    <div id="scr-client-auth" class="screen">
         <div class="card">
-            <button class="btn" onclick="activateUser('client', 'scr-client-order')">أنا عميل</button>
-            <button class="btn btn" style="background:#475569; color:white;" onclick="activateUser('worker', 'scr-worker-main')">أنا صنايعي</button>
-            <button class="btn" style="background:var(--admin); color:white; margin-top: 30px;" onclick="activateUser('admin', 'scr-admin-dashboard')">لوحة تحكم المدير (محمد)</button>
+            <h2 style="text-align: center;">دخول العميل</h2>
+            <input type="tel" placeholder="رقم الموبايل">
+            <button class="btn" onclick="activateUser('client', 'scr-client-order')">تأكيد ودخول</button>
+            <button class="btn" style="background:none; color:#94a3b8;" onclick="nav('scr-welcome')">رجوع</button>
+        </div>
+    </div>
+
+    <div id="scr-worker-reg" class="screen">
+        <div class="card">
+            <h2>تسجيل فني جديد</h2>
+            <input type="text" placeholder="الاسم بالكامل">
+            <input type="number" placeholder="رقم البطاقة">
+            <label>تخصصك الأساسي:</label>
+            <select id="worker-craft">
+                <option>سباك (تأسيس وتشطيب)</option>
+                <option>كهربائي (سلسيون وصيانة)</option>
+                <option>نقاش (دهانات وديكور)</option>
+                <option>نجار (باب وشباك وموبيليا)</option>
+                <option>فني تكييف (تركيب وصيانة)</option>
+                <option>حداد (كريتال وفورفورجيه)</option>
+                <option>ألوميتال (مطابخ وشبابيك)</option>
+                <option>فني دش ورسيفر</option>
+                <option>بنا (مباني وطوب)</option>
+                <option>استورجي (تلميع ودهان خشب)</option>
+                <option>فني سيراميك وبلاط</option>
+                <option>فني محارة (مرمات وبياض)</option>
+                <option>فني جبس بورد وديكور</option>
+            </select>
+            <button class="btn" onclick="activateUser('worker', 'scr-worker-main')">فتح الحساب والعمل</button>
         </div>
     </div>
 
     <div id="scr-client-order" class="screen">
-        <h3>طلب فني جديد</h3>
+        <h3>طلب خدمة جديدة</h3>
         <div class="card">
-            <select><option>سباك</option><option>كهربائي</option></select>
-            <textarea placeholder="اشرح المشكلة.."></textarea>
-            <button class="btn">نشر الطلب</button>
+            <label>نوع الصنايعي المطلوب:</label>
+            <select>
+                <option>سباك</option><option>كهربائي</option><option>نقاش</option>
+                <option>نجار</option><option>فني تكييف</option><option>حداد</option>
+                <option>ألوميتال</option><option>فني دش</option><option>بنا</option>
+                <option>استورجي</option><option>فني سيراميك</option><option>فني محارة</option>
+            </select>
+            <textarea style="height: 100px;" placeholder="اكتب مشكلتك هنا بالتفصيل.."></textarea>
+            <button class="btn" onclick="alert('تم نشر طلبك للصنايعية في منطقتك'); showBadge();">إرسال الطلب</button>
         </div>
     </div>
 
     <div id="scr-worker-main" class="screen">
-        <div class="card" style="text-align: center;">
-            <p>المديونية</p>
-            <div style="font-size: 2rem; color: var(--danger);">150 ج.م</div>
+        <div id="debt-alert" class="alert-box" style="display:none;">
+            <i class="fas fa-lock fa-2x"></i><br>
+            <strong>الحساب متوقف مؤقتاً</strong><br>
+            مديونيتك تخطت 1000 ج. يرجى السداد.
         </div>
-        <h3>طلبات متاحة</h3>
-        <div class="card"><p>صيانة تكييف - المعادي</p><button class="btn">قبول</button></div>
+        <div class="card" style="text-align: center; border-color: var(--danger);">
+            <p>المديونية المستحقة للمنصة</p>
+            <div class="wallet-amount" id="worker-debt-display">150 ج.م</div>
+            <button class="btn" style="background:var(--success); color:white;" onclick="nav('scr-wallet')">سداد المديونية الآن</button>
+        </div>
+        <div id="jobs-container">
+            <h3>طلبات متاحة لك</h3>
+            <div class="card">
+                <strong>مرمة محارة ودهان</strong>
+                <p><small>الحي العاشر - مطلوب فني فوراً</small></p>
+                <button class="btn" onclick="nav('scr-chat')">قبول الشغلانة</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="scr-wallet" class="screen">
+        <h3>المحفظة والسداد</h3>
+        <div class="card" style="text-align: center;">
+            <p>حول المبلغ عبر <strong>InstaPay</strong></p>
+            <div class="card" style="background:#000; border:1px solid var(--main); font-size:1.3rem;">01020744825</div>
+            <button class="btn" onclick="nav('scr-chat')">إرسال الإيصال</button>
+        </div>
     </div>
 
     <div id="scr-admin-dashboard" class="screen">
-        <h2 style="color: var(--admin);"><i class="fas fa-user-shield"></i> لوحة تحكم محمد</h2>
-        
+        <h2 style="color: var(--admin);">لوحة تحكم الإدارة</h2>
         <div class="admin-stat">
-            <div class="stat-box">إجمالي المديونيات<br><span>4,250 ج</span></div>
-            <div class="stat-box" style="background:#1e293b; border:1px solid var(--admin);">صنايعية نشطين<br><span>12</span></div>
+            <div class="stat-box">إجمالي الديون<span>4,250 ج</span></div>
+            <div class="stat-box">فنيين نشطين<span>24</span></div>
         </div>
-
-        <h3>إدارة الصنايعية والديون</h3>
-        <div class="card" style="padding: 10px;">
-            <div class="worker-row">
-                <div><strong>أحمد السباك</strong><br><small>الديون: 1,200 ج</small></div>
-                <span class="status-badge status-blocked">محظور</span>
-            </div>
-            <div class="worker-row">
-                <div><strong>هاني كهرباء</strong><br><small>الديون: 300 ج</small></div>
-                <span class="status-badge status-active">شغال</span>
-            </div>
-            <div class="worker-row">
-                <div><strong>سعيد نجار</strong><br><small>الديون: 1,050 ج</small></div>
-                <span class="status-badge status-blocked">محظور</span>
-            </div>
-        </div>
-
-        <h3>آخر تحويلات InstaPay</h3>
-        <div class="card">
-            <p><i class="fas fa-receipt"></i> صابر النقاش بعت 500 ج</p>
-            <button class="btn" style="padding:5px; font-size:0.8rem; background:var(--success);">تأكيد السداد وفتح الحساب</button>
+        <h3>مراقبة الفنيين</h3>
+        <div class="card" id="admin-worker-list">
+            <div class="notif-item">أحمد (سباك) - 1200 ج <span style="color:var(--danger)">محظور</span></div>
         </div>
     </div>
 
+    <div id="scr-notifications" class="screen"><h3>التنبيهات</h3><div id="notif-content"></div></div>
+    <div id="scr-chat" class="screen"><h3>المحادثة</h3><div class="chat-container"><div style="flex:1; padding:15px;">دعم منصة محمد معك..</div></div></div>
+
     <nav id="app-nav" class="nav-bottom">
-        <div class="nav-item" onclick="goHome()"><i class="fas fa-home"></i><br>الرئيسية</div>
-        <div class="nav-item" id="nav-admin-only" onclick="nav('scr-admin-dashboard')" style="display:none;"><i class="fas fa-chart-line"></i><br>الإحصائيات</div>
-        <div class="nav-item" onclick="nav('scr-chat')"><i class="fas fa-comments"></i><br>الشات</div>
+        <div class="nav-item" onclick="goHome()"><i class="fas fa-home"></i>الرئيسية</div>
+        <div class="nav-item" onclick="showNotifications()"><i class="fas fa-bell"></i>تنبيهات<span id="notif-badge" class="badge" style="display:none;">1</span></div>
+        <div class="nav-item" onclick="nav('scr-chat')"><i class="fas fa-comments"></i>شات</div>
+        <div class="nav-item" id="nav-wallet-link" onclick="nav('scr-wallet')"><i class="fas fa-wallet"></i>المحفظة</div>
+        <div class="nav-item" id="nav-admin-link" style="display:none; color:var(--admin);" onclick="nav('scr-admin-dashboard')"><i class="fas fa-user-shield"></i>المدير</div>
     </nav>
 
     <script>
         let currentUser = "";
+        let workerDebt = 150; 
 
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            if(id === 'scr-worker-main') checkWorkerStatus();
         }
 
-        function activateUser(type, screen) {
+        function activateUser(type, startScreen) {
             currentUser = type;
             document.getElementById('app-nav').classList.add('nav-active');
-            // إظهار زر الإحصائيات فقط لو أنت المدير
-            document.getElementById('nav-admin-only').style.display = (type === 'admin') ? 'block' : 'none';
-            nav(screen);
+            document.getElementById('nav-wallet-link').style.display = (type === 'worker') ? 'block' : 'none';
+            document.getElementById('nav-admin-link').style.display = (type === 'admin') ? 'block' : 'none';
+            nav(startScreen);
         }
+
+        function checkWorkerStatus() {
+            const isBlocked = (workerDebt >= 1000);
+            document.getElementById('debt-alert').style.display = isBlocked ? 'block' : 'none';
+            document.getElementById('jobs-container').style.opacity = isBlocked ? '0.2' : '1';
+            document.getElementById('worker-debt-display').innerText = workerDebt + " ج.م";
+        }
+
+        function showNotifications() {
+            const container = document.getElementById('notif-content');
+            container.innerHTML = `<div class="card">لا توجد تنبيهات جديدة حالياً.</div>`;
+            document.getElementById('notif-badge').style.display = "none";
+            nav('scr-notifications');
+        }
+
+        function showBadge() { document.getElementById('notif-badge').style.display = "block"; }
 
         function goHome() {
             if(currentUser === 'admin') nav('scr-admin-dashboard');
@@ -123,4 +204,4 @@
         }
     </script>
 </body>
-</html>
+                                                                                                                                             </html>
