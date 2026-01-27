@@ -1,207 +1,154 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة محمد 2026 - ULTRA SYSTEM</title>
-<style>
-body{margin:0;font-family:Segoe UI;background:#0b0f1a;color:#f8fafc;padding-bottom:90px}
-header{background:#1e293b;padding:15px;font-weight:900;color:#f59e0b;text-align:center;position:sticky;top:0;z-index:100}
-.screen{display:none;padding:15px}
-.active{display:block}
-.card{background:#1e293b;padding:15px;border-radius:12px;margin-bottom:10px}
-.btn{background:#f59e0b;color:#000;border:none;padding:12px;border-radius:10px;width:100%;font-weight:bold;margin-top:5px;cursor:pointer}
-input,select,textarea{width:100%;padding:10px;border-radius:8px;border:none;margin:6px 0;background:#0f172a;color:white}
-.nav{position:fixed;bottom:0;width:100%;background:#1e293b;display:none;justify-content:space-around;padding:10px}
-.nav div{text-align:center;font-size:12px;cursor:pointer;color:#94a3b8}
-.nav-active{color:#f59e0b !important}
-.msg{padding:10px;border-radius:12px;max-width:80%;margin-bottom:5px;word-break:break-word}
-.sent{background:#f59e0b;color:#000;margin-left:auto}
-.received{background:#334155;margin-right:auto}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNAY3Y PRO | منصة محمد الاحترافية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #020617; color: #e2e8f0; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .gold-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; font-weight: 900; }
+        .hidden { display: none; }
+        .animate-pop { animation: pop 0.3s ease-out; }
+        @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
 </head>
 <body>
 
-<header id="logo">PRO منصة محمد</header>
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[1000] hidden glass p-4 rounded-2xl border-l-4 border-amber-500 animate-pop"></div>
 
-<!-- AUTH -->
-<div id="auth" class="screen active">
-<input id="phone" placeholder="رقم الموبايل">
-<select id="role">
-<option value="client">عميل</option>
-<option value="worker">صنايعي</option>
-</select>
-<select id="skill">
-<option>سباك</option><option>كهربائي</option><option>نجار</option>
-</select>
-<button class="btn" onclick="login()">دخول</button>
-</div>
+    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div onclick="secretAdminTrigger()" class="flex items-center gap-2 cursor-pointer select-none">
+            <div class="gold-btn w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h1 class="text-xl font-black tracking-tighter">SNAY3Y <span class="text-amber-500">PRO</span></h1>
+        </div>
+        <div id="user-label" class="text-[10px] font-bold bg-slate-800 px-3 py-1 rounded-full border border-slate-700">زائر</div>
+    </nav>
 
-<!-- CLIENT -->
-<div id="client" class="screen">
-<div class="card">
-<h3>نشر طلب جديد</h3>
-<textarea id="desc" placeholder="وصف المشكلة"></textarea>
-<input id="price" type="number" placeholder="الميزانية">
-<button class="btn" onclick="postJob()">نشر</button>
-</div>
-<div id="clientJobs"></div>
-</div>
+    <main class="max-w-md mx-auto p-4 space-y-6">
 
-<!-- WORKER -->
-<div id="worker" class="screen">
-<div class="card">
-رصيدك: <b id="workerBalance">0</b> ج  
-<button class="btn" onclick="withdraw()">طلب سحب</button>
-</div>
-<h3>الطلبات المتاحة</h3>
-<div id="workerJobs"></div>
-</div>
+        <section id="scr-auth" class="py-10 space-y-8 text-center animate-pop">
+            <div>
+                <h2 class="text-4xl font-black text-white">أهلاً بك</h2>
+                <p class="text-slate-400 mt-2">سجل دخولك لبدء العمل</p>
+            </div>
+            <input type="tel" id="u-phone" placeholder="01XXXXXXXXX" class="w-full bg-slate-900 border-2 border-slate-800 p-5 rounded-3xl text-center text-2xl font-bold focus:border-amber-500 outline-none transition-all">
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="login('client')" class="gold-btn h-20 rounded-3xl shadow-lg">أنا عميل</button>
+                <button onclick="document.getElementById('worker-skills').classList.toggle('hidden')" class="bg-slate-800 h-20 rounded-3xl font-bold border border-slate-700">أنا فني</button>
+            </div>
+            <div id="worker-skills" class="hidden glass p-4 rounded-3xl space-y-4">
+                <select id="u-skill" class="w-full p-4 bg-slate-950 rounded-xl border border-slate-800 outline-none">
+                    <option>سباك</option><option>كهربائي</option><option>نجار</option><option>تكييف</option>
+                </select>
+                <button onclick="login('worker')" class="w-full p-4 bg-white text-black font-black rounded-xl">تأكيد كفني</button>
+            </div>
+        </section>
 
-<!-- CHAT -->
-<div id="chat" class="screen">
-<h3>الدردشة</h3>
-<div id="chatBox" style="height:50vh;overflow-y:auto;margin-bottom:10px;"></div>
-<input id="msg" placeholder="اكتب هنا..">
-<button class="btn" onclick="sendMsg()">إرسال</button>
-</div>
+        <section id="scr-client" class="hidden space-y-6 animate-pop">
+            <div class="glass p-6 rounded-[2.5rem] border border-white/5 shadow-2xl">
+                <h3 class="font-black mb-4 flex items-center gap-2"><i class="fas fa-magic text-amber-500"></i> اطلب صيانة</h3>
+                <textarea id="j-desc" class="w-full bg-slate-950 rounded-2xl p-4 h-28 outline-none focus:ring-2 ring-amber-500 border border-slate-800 mb-4" placeholder="اشرح المشكلة..."></textarea>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="getGPS()" id="btn-gps" class="flex-1 p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20 font-bold text-xs"><i class="fas fa-map-marker-alt"></i> تحديد الموقع</button>
+                    <button class="flex-1 p-3 bg-slate-900 text-slate-400 rounded-xl border border-slate-800 font-bold text-xs"><i class="fas fa-camera"></i> صورة العطل</button>
+                </div>
+                <button onclick="sendOrder()" class="w-full p-4 gold-btn rounded-2xl">نشر الطلب (20% عمولة)</button>
+            </div>
+            <div id="client-feed" class="space-y-4"></div>
+        </section>
 
-<!-- ADMIN -->
-<div id="admin" class="screen">
-<div class="card">
-<b>لوحة تحكم الأدمن</b><br>
-إجمالي أرباح المنصة: <span id="adminProfit">0</span> ج
-</div>
-<h3>طلبات السحب</h3>
-<div id="withdrawRequests"></div>
-</div>
+        <section id="scr-worker" class="hidden space-y-6 animate-pop">
+            <div class="glass p-5 rounded-3xl bg-gradient-to-r from-red-600/20 to-slate-900 border border-red-500/30">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] font-black text-red-400">المديونية (20%)</p>
+                        <h4 class="text-3xl font-black text-white"><span id="w-debt">0</span> ج.م</h4>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-400">InstaPay</p>
+                        <p class="text-sm font-bold text-amber-500">01020744825</p>
+                    </div>
+                </div>
+            </div>
+            <div id="worker-feed" class="space-y-4"></div>
+        </section>
 
-<div class="nav" id="nav">
-<div onclick="home()">الرئيسية</div>
-<div onclick="showChat()">الدردشة</div>
-<div onclick="logout()" style="color:#ef4444">خروج</div>
-</div>
+        <section id="scr-admin" class="hidden space-y-6 animate-pop">
+            <h2 class="text-2xl font-black text-amber-500">لوحة القبطان محمد</h2>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="glass p-4 rounded-2xl"><p class="text-[10px]">إجمالي ديونك بره</p><h4 id="adm-total" class="text-xl font-black text-green-400">0</h4></div>
+                <div class="glass p-4 rounded-2xl"><p class="text-[10px]">عدد الصنايعية</p><h4 id="adm-count" class="text-xl font-black text-blue-400">0</h4></div>
+            </div>
+            <div id="adm-list" class="glass rounded-3xl overflow-hidden divide-y divide-white/5"></div>
+        </section>
 
-<script>
-const COMMISSION = 0.20;
-let adminClicks=0;
-let adminPass="Mohamed214@";
-let currentJobId=null;
+    </main>
 
-let state=JSON.parse(localStorage.getItem("state"))||{
-  users:{},jobs:[],msgs:[],withdraws:[],profit:0
-};
-let user=null;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// ADMIN access on logo triple click
-logo.onclick=()=>{
-  adminClicks++;
-  setTimeout(()=>adminClicks=0,1500);
-  if(adminClicks==3){
-    let p=prompt("كلمة مرور الأدمن");
-    if(p===adminPass){show("admin");renderAdmin();nav.style.display="flex";}
-  }
-}
+        const firebaseConfig = { apiKey: "AIza...", databaseURL: "https://..." };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-// Save state
-function save(){localStorage.setItem("state",JSON.stringify(state));}
+        // --- نظام الدخول ---
+        window.login = (role) => {
+            const ph = document.getElementById('u-phone').value;
+            if(ph.length < 11) return alert("الرقم غلط");
+            window.user = { ph, role, skill: document.getElementById('u-skill').value };
+            document.getElementById('scr-auth').classList.add('hidden');
+            document.getElementById('user-label').innerText = role === 'client' ? 'عميل' : `فني ${window.user.skill}`;
+            if(role === 'client') { document.getElementById('scr-client').classList.remove('hidden'); }
+            else { document.getElementById('scr-worker').classList.remove('hidden'); loadWorker(); }
+        };
 
-// LOGIN
-function login(){
-  let ph=phone.value.trim();
-  if(!ph){alert("أدخل رقم الهاتف"); return;}
-  if(!state.users[ph]){
-    state.users[ph]={role:role.value,skill:skill.value,balance:0};
-  }
-  user={ph};
-  save();home();
-}
+        // --- نظام الأمان السري للوحة التحكم ---
+        let clicks = 0;
+        window.secretAdminTrigger = () => {
+            clicks++;
+            if(clicks === 5) {
+                const p = prompt("كلمة مرور الإدارة:");
+                if(p === "Mohamed214@") {
+                    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+                    document.getElementById('scr-admin').classList.remove('hidden');
+                    loadAdmin();
+                }
+                clicks = 0;
+            }
+            setTimeout(() => clicks = 0, 3000);
+        };
 
-// HOME
-function home(){
-  nav.style.display="flex";
-  let r=state.users[user.ph].role;
-  show(r);
-  render();
-}
+        // --- الوظائف الأساسية ---
+        window.sendOrder = () => {
+            const desc = document.getElementById('j-desc').value;
+            const newOrder = push(ref(db, 'orders'));
+            set(newOrder, { client: window.user.ph, desc, status: 'pending', skill: 'سباك', time: Date.now() });
+            alert("طلبك اتنشر");
+        };
 
-// SHOW SCREEN
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
+        function loadWorker() {
+            onValue(ref(db, `debts/${window.user.ph}`), s => document.getElementById('w-debt').innerText = s.val() || 0);
+        }
 
-// POST JOB
-function postJob(){
-  let d=desc.value.trim(), p=+price.value;
-  if(!d || !p){alert("املأ كل الحقول"); return;}
-  state.jobs.push({id:Date.now(),client:user.ph,desc:d,price:p,status:"open",offers:[]});
-  desc.value=""; price.value="";
-  save(); render();
-}
-
-// RENDER CLIENT / WORKER
-function render(){
-  let role=state.users[user.ph].role;
-  if(role==="client"){
-    clientJobs.innerHTML=state.jobs.filter(j=>j.client===user.ph)
-    .map(j=>`
-      <div class="card">
-        ${j.desc}<br>
-        ${j.offers.map(o=>`
-          <div>عرض ${o.price} ج 
-          <button onclick="accept(${o.jobId||j.id},'${o.ph}',${o.price})">قبول</button></div>`).join("")}
-      </div>
-    `).join("");
-  }else{
-    workerBalance.innerText=state.users[user.ph].balance;
-    workerJobs.innerHTML=state.jobs.filter(j=>j.status==="open" && j.type===state.users[user.ph].skill)
-    .map(j=>`
-      <div class="card">
-        ${j.desc} - ${j.price} ج
-        <button onclick="offer(${j.id})">تقديم عرض</button>
-      </div>
-    `).join("");
-  }
-}
-
-// WORKER OFFER
-function offer(id){
-  let j=state.jobs.find(j=>j.id==id);
-  let p=prompt("سعرك");
-  if(!p) return;
-  j.offers.push({ph:user.ph,price:+p});
-  save(); render();
-}
-
-// ACCEPT OFFER
-function accept(id,ph,price){
-  let j=state.jobs.find(j=>j.id==id);
-  let fee=Math.round(price*COMMISSION);
-  let net=price-fee;
-  j.worker=ph; j.final=price; j.platformFee=fee; j.workerNet=net; j.status="work";
-  state.users[ph].balance+=net;
-  state.profit+=fee;
-  currentJobId=j.id;
-  save(); show("chat");
-}
-
-// CHAT
-function sendMsg(){
-  if(!currentJobId){alert("لا يوجد شغل جاري"); return;}
-  state.msgs.push({job:currentJobId,from:user.ph,text:msg.value});
-  msg.value="";
-  save(); showChat();
-}
-
-function showChat(){
-  if(!currentJobId){chatBox.innerHTML="لا يوجد دردشة"; return;}
-  let j=state.jobs.find(j=>j.id===currentJobId);
-  chatBox.innerHTML=state.msgs.filter(m=>m.job===j.id)
-    .map(m=>`<div class="msg ${m.from===user.ph?'sent':'received'}">${m.text}</div>`).join("");
-  chatBox.scrollTop=chatBox.scrollHeight;
-}
-
-// WORKER WITHDRAW
-function withdraw(){
-  let bal=state.
+        function loadAdmin() {
+            onValue(ref(db, 'debts'), s => {
+                const list = document.getElementById('adm-list');
+                list.innerHTML = "";
+                let total = 0;
+                Object.keys(s.val() || {}).forEach(ph => {
+                    total += s.val()[ph];
+                    list.innerHTML += `<div class="p-4 flex justify-between"><span>${ph}</span><span class="text-red-400">${s.val()[ph]} ج.م</span></div>`;
+                });
+                document.getElementById('adm-total').innerText = total;
+            });
+        }
+    </script>
+</body>
+</html>
