@@ -213,12 +213,18 @@ let clicks = 0;
 function adminTrigger() {
     clicks++;
     if(clicks === 5) {
-        let pass = prompt("كلمة سر الإدارة:");
-        if(pass === "Mohamed214@") {
-            navTo('admin');
-            loadAdmin();
+        let pass = prompt("أدخل كلمة سر الإدارة للأهمية:");
+        
+        // هنا بقى القفل الحقيقي:
+        if(pass === "Mohamed214@") { 
+            navTo('admin'); 
+            loadAdmin(); 
+            alert("تم الدخول بنجاح يا مدير ✅");
+        } else {
+            alert("⚠️ كلمة السر غلط.. مش أي حد يدخل هنا!");
         }
-        clicks = 0;
+        
+        clicks = 0; // تصغير العداد عشان يحاول تاني لو غلط
     }
 }
 
