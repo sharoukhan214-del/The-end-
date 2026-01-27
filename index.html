@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة محمد للصنايعية</title>
+    <title>منصة محمد - لوحة التحكم</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #f59e0b; --bg: #0f172a; --card: #1e293b; --success: #22c55e; --danger: #ef4444; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 60px; }
+        :root { --main: #f59e0b; --bg: #0f172a; --card: #1e293b; --success: #22c55e; --danger: #ef4444; --admin: #8b5cf6; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 70px; }
         .screen { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #334155; margin-bottom: 20px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #334155; margin-bottom: 15px; }
         .btn { background: var(--main); color: black; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-secondary { background: #475569; color: white; }
-
-        /* القائمة السفلية مخفية تماماً في البداية */
-        .nav-bottom { 
-            position: fixed; bottom: 0; width: 100%; background: var(--card); 
-            display: none; justify-content: space-around; padding: 10px 0; 
-            border-top: 1px solid #334155; z-index: 1000; 
-        }
-        .nav-active { display: flex !important; } /* تظهر فقط عند الاستدعاء */
         
-        .map-box { height: 200px; background: #334155; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px dashed var(--main); }
+        /* ستايل لوحة التحكم */
+        .admin-stat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: var(--admin); padding: 15px; border-radius: 15px; text-align: center; }
+        .stat-box span { font-size: 1.5rem; font-weight: bold; }
+        
+        .worker-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #334155; }
+        .status-badge { padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; }
+        .status-active { background: var(--success); }
+        .status-blocked { background: var(--danger); }
+
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card); display: none; justify-content: space-around; padding: 10px 0; border-top: 1px solid #334155; z-index: 1000; }
+        .nav-active { display: flex !important; }
+        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -33,35 +35,13 @@
     <div id="scr-welcome" class="screen active">
         <div style="text-align: center; margin-top: 50px;">
             <i class="fas fa-tools fa-4x" style="color: var(--main);"></i>
-            <h1 style="color: var(--main);">منصة محمد</h1>
-            <p>اختر نوع الحساب للبدء</p>
+            <h1>منصة محمد</h1>
+            <p>رزقك وحل مشاكلك في ضغطة زرار</p>
         </div>
         <div class="card">
-            <button class="btn" onclick="nav('scr-client-auth')">أنا عميل (أبحث عن فني)</button>
-            <button class="btn btn-secondary" onclick="nav('scr-worker-reg')">أنا صنايعي (أبحث عن شغل)</button>
-        </div>
-    </div>
-
-    <div id="scr-client-auth" class="screen">
-        <div class="card" style="text-align: center;">
-            <h2>دخول العميل</h2>
-            <input type="tel" placeholder="رقم الموبايل">
-            <button class="btn" onclick="nav('scr-client-otp')">دخول / تسجيل</button>
-            <button class="btn btn-secondary" onclick="nav('scr-welcome')">رجوع</button>
-        </div>
-    </div>
-
-    <div id="scr-client-otp" class="screen">
-        <div class="card" style="text-align: center;">
-            <h2>تأكيد الكود</h2>
-            <p>أدخل الكود المكون من 4 أرقام</p>
-            <div style="display: flex; gap: 10px; justify-content: center; direction: ltr; margin: 20px 0;">
-                <input type="text" maxlength="1" style="width: 40px; text-align: center;">
-                <input type="text" maxlength="1" style="width: 40px; text-align: center;">
-                <input type="text" maxlength="1" style="width: 40px; text-align: center;">
-                <input type="text" maxlength="1" style="width: 40px; text-align: center;">
-            </div>
-            <button class="btn" onclick="activateClient()">تأكيد ودخول</button>
+            <button class="btn" onclick="activateUser('client', 'scr-client-order')">أنا عميل</button>
+            <button class="btn btn" style="background:#475569; color:white;" onclick="activateUser('worker', 'scr-worker-main')">أنا صنايعي</button>
+            <button class="btn" style="background:var(--admin); color:white; margin-top: 30px;" onclick="activateUser('admin', 'scr-admin-dashboard')">لوحة تحكم المدير (محمد)</button>
         </div>
     </div>
 
@@ -70,88 +50,76 @@
         <div class="card">
             <select><option>سباك</option><option>كهربائي</option></select>
             <textarea placeholder="اشرح المشكلة.."></textarea>
-            <input type="number" placeholder="السعر المعروض (ج.م)">
-            <div class="map-box"><i class="fas fa-map-marker-alt" style="color:red;"></i><span style="margin-right:10px;">تم تحديد موقعك</span></div>
-            <button class="btn" onclick="alert('تم نشر طلبك')">نشر الطلب</button>
-        </div>
-    </div>
-
-    <div id="scr-client-profile" class="screen">
-        <div style="text-align:center;">
-            <div style="width:100px; height:100px; background:#334155; border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; border:3px solid var(--main); overflow:hidden;">
-                <i class="fas fa-user fa-3x"></i>
-            </div>
-            <h2>بروفايل العميل</h2>
-        </div>
-        <div class="card">
-            <input type="text" value="محمد أحمد">
-            <button class="btn" onclick="logout()">تسجيل خروج</button>
-        </div>
-    </div>
-
-    <div id="scr-worker-reg" class="screen">
-        <div class="card">
-            <div style="background:var(--main); color:black; padding:5px; border-radius:5px; margin-bottom:10px; text-align:center; font-weight:bold;">تسجيل فني جديد</div>
-            <input type="text" placeholder="الاسم (كما في البطاقة)">
-            <input type="number" placeholder="رقم البطاقة (14 رقم)">
-            <select><option>تخصصك إيه؟</option><option>سباك</option><option>كهربائي</option></select>
-            <p style="font-size: 0.8rem; color: #94a3b8;">* مديونية افتتاحية 150 ج</p>
-            <button class="btn" onclick="activateWorker()">تسجيل كصنايعي</button>
-            <button class="btn btn-secondary" onclick="nav('scr-welcome')">رجوع</button>
+            <button class="btn">نشر الطلب</button>
         </div>
     </div>
 
     <div id="scr-worker-main" class="screen">
-        <div class="card" style="background:var(--danger); text-align:center; font-weight:bold;">مديونيتك: 150 ج</div>
-        <h3>طلبات قريبة منك</h3>
+        <div class="card" style="text-align: center;">
+            <p>المديونية</p>
+            <div style="font-size: 2rem; color: var(--danger);">150 ج.م</div>
+        </div>
+        <h3>طلبات متاحة</h3>
+        <div class="card"><p>صيانة تكييف - المعادي</p><button class="btn">قبول</button></div>
+    </div>
+
+    <div id="scr-admin-dashboard" class="screen">
+        <h2 style="color: var(--admin);"><i class="fas fa-user-shield"></i> لوحة تحكم محمد</h2>
+        
+        <div class="admin-stat">
+            <div class="stat-box">إجمالي المديونيات<br><span>4,250 ج</span></div>
+            <div class="stat-box" style="background:#1e293b; border:1px solid var(--admin);">صنايعية نشطين<br><span>12</span></div>
+        </div>
+
+        <h3>إدارة الصنايعية والديون</h3>
+        <div class="card" style="padding: 10px;">
+            <div class="worker-row">
+                <div><strong>أحمد السباك</strong><br><small>الديون: 1,200 ج</small></div>
+                <span class="status-badge status-blocked">محظور</span>
+            </div>
+            <div class="worker-row">
+                <div><strong>هاني كهرباء</strong><br><small>الديون: 300 ج</small></div>
+                <span class="status-badge status-active">شغال</span>
+            </div>
+            <div class="worker-row">
+                <div><strong>سعيد نجار</strong><br><small>الديون: 1,050 ج</small></div>
+                <span class="status-badge status-blocked">محظور</span>
+            </div>
+        </div>
+
+        <h3>آخر تحويلات InstaPay</h3>
         <div class="card">
-            <p>عميل يطلب سباكة (على بعد 1.5 كم)</p>
-            <button class="btn" onclick="alert('تم قبول الطلب')">قبول الشغلانة</button>
+            <p><i class="fas fa-receipt"></i> صابر النقاش بعت 500 ج</p>
+            <button class="btn" style="padding:5px; font-size:0.8rem; background:var(--success);">تأكيد السداد وفتح الحساب</button>
         </div>
     </div>
 
     <nav id="app-nav" class="nav-bottom">
-        <div onclick="goHome()"><i class="fas fa-home"></i><br><small>الرئيسية</small></div>
-        <div id="order-icon" onclick="nav('scr-client-order')"><i class="fas fa-plus"></i><br><small>طلب</small></div>
-        <div id="profile-icon" onclick="nav('scr-client-profile')"><i class="fas fa-user"></i><br><small>ملفي</small></div>
+        <div class="nav-item" onclick="goHome()"><i class="fas fa-home"></i><br>الرئيسية</div>
+        <div class="nav-item" id="nav-admin-only" onclick="nav('scr-admin-dashboard')" style="display:none;"><i class="fas fa-chart-line"></i><br>الإحصائيات</div>
+        <div class="nav-item" onclick="nav('scr-chat')"><i class="fas fa-comments"></i><br>الشات</div>
     </nav>
 
     <script>
-        let userType = ""; // لتحديد نوع المستخدم
+        let currentUser = "";
 
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0, 0);
         }
 
-        // تفعيل واجهة العميل
-        function activateClient() {
-            userType = "client";
-            document.getElementById('app-nav').classList.add('nav-active'); // إظهار القائمة
-            document.getElementById('order-icon').style.display = "block"; // إظهار زر الطلب للعميل
-            nav('scr-client-order');
+        function activateUser(type, screen) {
+            currentUser = type;
+            document.getElementById('app-nav').classList.add('nav-active');
+            // إظهار زر الإحصائيات فقط لو أنت المدير
+            document.getElementById('nav-admin-only').style.display = (type === 'admin') ? 'block' : 'none';
+            nav(screen);
         }
 
-        // تفعيل واجهة الصنايعي
-        function activateWorker() {
-            userType = "worker";
-            document.getElementById('app-nav').classList.add('nav-active'); // إظهار القائمة
-            document.getElementById('order-icon').style.display = "none"; // إخفاء زر الطلب للصنايعي
-            nav('scr-worker-main');
-        }
-
-        // زر الرئيسية السفلية يوجه حسب النوع
         function goHome() {
-            if(userType === "client") nav('scr-client-order');
-            else if(userType === "worker") nav('scr-worker-main');
-            else nav('scr-welcome');
-        }
-
-        function logout() {
-            userType = "";
-            document.getElementById('app-nav').classList.remove('nav-active'); // إخفاء القائمة
-            nav('scr-welcome');
+            if(currentUser === 'admin') nav('scr-admin-dashboard');
+            else if(currentUser === 'client') nav('scr-client-order');
+            else nav('scr-worker-main');
         }
     </script>
 </body>
