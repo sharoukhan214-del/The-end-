@@ -3,90 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNAY3Y PRO | معاينة الواجهات</title>
+    <title>SNAY3Y PRO | صنايعي برو</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #020617; color: #e2e8f0; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .gold-btn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #000; font-weight: 900; }
-        .section { display: none; padding-bottom: 80px; }
-        .active { display: block; animation: fade 0.4s; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-    </style>
+    <style>body { font-family: 'Cairo', sans-serif; }</style>
 </head>
-<body>
+<body class="bg-slate-950 text-white">
 
-    <section id="scr-auth" class="section active p-6 text-center">
-        <h1 class="text-4xl font-black text-amber-500 mb-8">SNAY3Y PRO</h1>
-        <div class="space-y-4">
-            <button onclick="show('scr-client')" class="w-full p-6 gold-btn rounded-3xl text-xl">دخول كـ عميل (رؤية الشات والطلبات)</button>
-            <button onclick="show('scr-worker')" class="w-full p-6 bg-slate-800 rounded-3xl font-bold border border-slate-700">دخول كـ فني (رؤية المحفظة والشغل)</button>
-            <button onclick="show('scr-admin')" class="w-full p-6 bg-red-900/20 text-red-500 rounded-3xl font-bold border border-red-500/20">دخول الإدارة (رؤية الأرباح)</button>
-        </div>
-    </section>
+    <header class="p-6 text-center border-b border-slate-900">
+        <h1 id="logo" class="text-3xl font-black text-amber-500 cursor-pointer">SNAY3Y PRO</h1>
+        <p class="text-slate-500 text-xs">نظام الربط الذكي مفعّل ✅</p>
+    </header>
 
-    <section id="scr-client" class="section p-4">
-        <h2 class="text-xl font-black mb-4">مرحباً يا عميل</h2>
-        <div class="glass p-4 rounded-3xl mb-6 border border-amber-500/20">
-            <h3 class="text-sm font-bold text-amber-500 mb-2 italic">متابعة طلبك الحالي</h3>
-            <div class="flex justify-between items-center text-xs">
-                <span>الحالة: <b class="text-green-400">الفني في الطريق</b></span>
-                <span>المسافة: 2.5 كم</span>
-            </div>
-            <div class="w-full bg-slate-800 h-2 mt-2 rounded-full overflow-hidden">
-                <div class="bg-amber-500 h-full w-2/3"></div>
-            </div>
-        </div>
-        <div class="glass p-4 rounded-3xl h-64 flex flex-col">
-            <p class="text-[10px] text-slate-500 text-center mb-2">دردشة مع الفني (أحمد الكهربائي)</p>
-            <div class="flex-1 space-y-2 overflow-y-auto text-xs">
-                <div class="bg-slate-800 p-2 rounded-lg ml-8 text-right">أهلاً يا فندم، العطل فين بالظبط؟</div>
-                <div class="bg-amber-500 text-black p-2 rounded-lg mr-8 text-left">في لوحة المفاتيح الرئيسية</div>
-            </div>
-            <div class="mt-2 flex gap-1">
-                <input type="text" placeholder="اكتب رسالة..." class="flex-1 bg-slate-900 p-2 rounded-xl text-xs outline-none">
-                <button class="bg-amber-500 text-black px-4 rounded-xl font-bold text-xs">إرسال</button>
+    <main class="p-4 max-w-md mx-auto">
+        <div id="order-box" class="bg-slate-900 p-6 rounded-[2.5rem] border border-slate-800 shadow-2xl">
+            <h2 class="text-xl font-bold mb-4 text-center">اطلب فني الآن</h2>
+            <div class="space-y-4">
+                <input id="userName" type="text" placeholder="اسمك الكريم" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700 focus:outline-none focus:border-amber-500">
+                <select id="service" class="w-full p-4 bg-slate-800 rounded-2xl border border-slate-700">
+                    <option>سباك محترف</option>
+                    <option>كهربائي فوري</option>
+                    <option>فني تكييف</option>
+                </select>
+                <button onclick="makeOrder()" class="w-full p-4 bg-amber-500 text-black font-black rounded-2xl shadow-lg shadow-amber-500/20 active:scale-95 transition">إرسال الطلب للسيستم</button>
             </div>
         </div>
-    </section>
-
-    <section id="scr-worker" class="section p-4">
-        <div class="bg-gradient-to-r from-amber-500 to-amber-700 p-6 rounded-[2.5rem] text-black mb-6 shadow-xl">
-            <p class="text-[10px] font-black opacity-70 uppercase">رصيد محفظتك (صافي)</p>
-            <h4 class="text-4xl font-black">450.00 <span class="text-sm">ج.م</span></h4>
-            <div class="mt-4 flex justify-between text-[10px] font-bold">
-                <span>إجمالي مبيعاتك: 2500 ج.م</span>
-                <span>عمولة المنصة (20%): 500 ج.م</span>
-            </div>
-        </div>
-        <div class="glass h-40 rounded-3xl mb-6 relative overflow-hidden flex items-center justify-center">
-            <i class="fas fa-map-marked-alt text-4xl text-slate-700"></i>
-            <p class="absolute bottom-2 text-[10px] text-amber-500 font-bold">خريطة حية لمكان العميل (بعد الربط)</p>
-        </div>
-        <button onclick="show('scr-auth')" class="w-full p-4 bg-slate-800 rounded-2xl text-xs">رجوع</button>
-    </section>
-
-    <section id="scr-admin" class="section p-4">
-        <h2 class="text-2xl font-black text-amber-500 mb-6">خزنة المنصة</h2>
-        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
-            <div class="glass p-4 rounded-3xl"><p class="text-[10px]">عمولات مستحقة</p><h4 class="text-xl font-black text-green-400">1,200 ج.م</h4></div>
-            <div class="glass p-4 rounded-3xl"><p class="text-[10px]">بلاغات</p><h4 class="text-xl font-black text-red-500">2</h4></div>
-        </div>
-        <div class="glass rounded-3xl p-4">
-            <p class="text-xs font-bold mb-4 border-b border-white/5 pb-2">آخر التحويلات (InstaPay)</p>
-            <div class="space-y-3 text-[10px]">
-                <div class="flex justify-between"><span>محمد (سباك)</span><span class="text-green-400">+100 ج.م</span></div>
-                <div class="flex justify-between"><span>علي (كهربائي)</span><span class="text-green-400">+250 ج.م</span></div>
-            </div>
-        </div>
-    </section>
+    </main>
 
     <script>
-        function show(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        // الأكواد اللي إنت جبتها من فايربيس ركبتها هنا:
+        const firebaseConfig = {
+            apiKey: "AIzaSyBp6XDnQj80f1B1c5hW", // مفتاحك
+            databaseURL: "https://snay3y-pro-default-rtdb.firebaseio.com",
+            projectId: "snay3y-pro",
+            appId: "1:505251217272:web:d1e53252f3b0dea049d28d"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function makeOrder() {
+            const name = document.getElementById('userName').value;
+            const job = document.getElementById('service').value;
+
+            if(!name) return alert("من فضلك اكتب اسمك");
+
+            // دي اللحظة اللي البيانات بتروح فيها لـ Firebase عندك
+            db.ref('active_orders').push({
+                customer: name,
+                service: job,
+                time: new Date().toLocaleTimeString(),
+                status: 'قيد البحث عن فني'
+            }).then(() => {
+                alert("يا وحش! الطلب اتسجل في فايربيس عندك بنجاح. روح بص على صفحة Realtime Database هتلاقي الطلب ظهر!");
+            });
         }
     </script>
 </body>
