@@ -1,207 +1,207 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة محمد للصنايعية - الإصدار الشامل</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --main: #f59e0b; --bg: #0f172a; --card: #1e293b; --success: #22c55e; --danger: #ef4444; --admin: #8b5cf6; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 70px; overflow-x: hidden; }
-        
-        /* الأنظمة الأساسية */
-        .screen { display: none; padding: 20px; animation: fadeIn 0.4s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #334155; margin-bottom: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; font-size: 1rem; }
-        .btn { background: var(--main); color: black; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .btn:active { transform: scale(0.95); }
-
-        /* المحفظة والحظر */
-        .wallet-amount { font-size: 2.5rem; font-weight: bold; color: var(--danger); text-align: center; }
-        .alert-box { background: rgba(239, 68, 68, 0.2); border: 2px solid var(--danger); padding: 15px; border-radius: 15px; color: #fecaca; margin-bottom: 20px; text-align: center; }
-
-        /* الإشعارات */
-        .notif-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #334155; position: relative; }
-        .notif-item i { font-size: 1.5rem; color: var(--main); }
-        .notif-dot { width: 8px; height: 8px; background: var(--danger); border-radius: 50%; position: absolute; left: 15px; top: 15px; }
-
-        /* لوحة تحكم المدير */
-        .admin-stat { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-box { background: var(--admin); padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .stat-box span { font-size: 1.5rem; font-weight: bold; display: block; }
-
-        /* القائمة السفلية */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card); display: none; justify-content: space-around; padding: 12px 0; border-top: 1px solid #334155; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-active { display: flex !important; }
-        .nav-item { text-align: center; color: #94a3b8; cursor: pointer; font-size: 0.75rem; position: relative; flex: 1; }
-        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; display: block; }
-        .badge { position: absolute; top: -5px; right: 25%; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.6rem; }
-
-        /* الشات */
-        .chat-container { height: 350px; background: #0f172a; border-radius: 15px; border: 1px solid #334155; display: flex; flex-direction: column; overflow: hidden; }
-        .chat-msg { padding: 10px; margin: 5px; border-radius: 10px; max-width: 80%; }
-        .msg-in { background: #334155; align-self: flex-start; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة محمد 2026 - ULTRA SYSTEM</title>
+<style>
+body{margin:0;font-family:Segoe UI;background:#0b0f1a;color:#f8fafc;padding-bottom:90px}
+header{background:#1e293b;padding:15px;font-weight:900;color:#f59e0b;text-align:center;position:sticky;top:0;z-index:100}
+.screen{display:none;padding:15px}
+.active{display:block}
+.card{background:#1e293b;padding:15px;border-radius:12px;margin-bottom:10px}
+.btn{background:#f59e0b;color:#000;border:none;padding:12px;border-radius:10px;width:100%;font-weight:bold;margin-top:5px;cursor:pointer}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;border:none;margin:6px 0;background:#0f172a;color:white}
+.nav{position:fixed;bottom:0;width:100%;background:#1e293b;display:none;justify-content:space-around;padding:10px}
+.nav div{text-align:center;font-size:12px;cursor:pointer;color:#94a3b8}
+.nav-active{color:#f59e0b !important}
+.msg{padding:10px;border-radius:12px;max-width:80%;margin-bottom:5px;word-break:break-word}
+.sent{background:#f59e0b;color:#000;margin-left:auto}
+.received{background:#334155;margin-right:auto}
+</style>
 </head>
 <body>
 
-    <div id="scr-welcome" class="screen active">
-        <div style="text-align: center; margin-top: 60px;">
-            <i class="fas fa-tools fa-5x" style="color: var(--main); text-shadow: 0 0 20px rgba(245,158,11,0.5);"></i>
-            <h1 style="font-size: 2.5rem; margin-top: 10px;">منصة محمد</h1>
-            <p style="color: #94a3b8;">كل الصنايعية في جيبك</p>
-        </div>
-        <div class="card" style="margin-top: 40px;">
-            <button class="btn" onclick="nav('scr-client-auth')">أنا عميل (أبحث عن فني)</button>
-            <button class="btn" style="background:#475569; color:white;" onclick="nav('scr-worker-reg')">أنا صنايعي (أبحث عن شغل)</button>
-            <button class="btn" style="background:var(--admin); color:white; margin-top:40px;" onclick="activateUser('admin', 'scr-admin-dashboard')">دخول المدير (محمد)</button>
-        </div>
-    </div>
+<header id="logo">PRO منصة محمد</header>
 
-    <div id="scr-client-auth" class="screen">
-        <div class="card">
-            <h2 style="text-align: center;">دخول العميل</h2>
-            <input type="tel" placeholder="رقم الموبايل">
-            <button class="btn" onclick="activateUser('client', 'scr-client-order')">تأكيد ودخول</button>
-            <button class="btn" style="background:none; color:#94a3b8;" onclick="nav('scr-welcome')">رجوع</button>
-        </div>
-    </div>
+<!-- AUTH -->
+<div id="auth" class="screen active">
+<input id="phone" placeholder="رقم الموبايل">
+<select id="role">
+<option value="client">عميل</option>
+<option value="worker">صنايعي</option>
+</select>
+<select id="skill">
+<option>سباك</option><option>كهربائي</option><option>نجار</option>
+</select>
+<button class="btn" onclick="login()">دخول</button>
+</div>
 
-    <div id="scr-worker-reg" class="screen">
-        <div class="card">
-            <h2>تسجيل فني جديد</h2>
-            <input type="text" placeholder="الاسم بالكامل">
-            <input type="number" placeholder="رقم البطاقة">
-            <label>تخصصك الأساسي:</label>
-            <select id="worker-craft">
-                <option>سباك (تأسيس وتشطيب)</option>
-                <option>كهربائي (سلسيون وصيانة)</option>
-                <option>نقاش (دهانات وديكور)</option>
-                <option>نجار (باب وشباك وموبيليا)</option>
-                <option>فني تكييف (تركيب وصيانة)</option>
-                <option>حداد (كريتال وفورفورجيه)</option>
-                <option>ألوميتال (مطابخ وشبابيك)</option>
-                <option>فني دش ورسيفر</option>
-                <option>بنا (مباني وطوب)</option>
-                <option>استورجي (تلميع ودهان خشب)</option>
-                <option>فني سيراميك وبلاط</option>
-                <option>فني محارة (مرمات وبياض)</option>
-                <option>فني جبس بورد وديكور</option>
-            </select>
-            <button class="btn" onclick="activateUser('worker', 'scr-worker-main')">فتح الحساب والعمل</button>
-        </div>
-    </div>
+<!-- CLIENT -->
+<div id="client" class="screen">
+<div class="card">
+<h3>نشر طلب جديد</h3>
+<textarea id="desc" placeholder="وصف المشكلة"></textarea>
+<input id="price" type="number" placeholder="الميزانية">
+<button class="btn" onclick="postJob()">نشر</button>
+</div>
+<div id="clientJobs"></div>
+</div>
 
-    <div id="scr-client-order" class="screen">
-        <h3>طلب خدمة جديدة</h3>
-        <div class="card">
-            <label>نوع الصنايعي المطلوب:</label>
-            <select>
-                <option>سباك</option><option>كهربائي</option><option>نقاش</option>
-                <option>نجار</option><option>فني تكييف</option><option>حداد</option>
-                <option>ألوميتال</option><option>فني دش</option><option>بنا</option>
-                <option>استورجي</option><option>فني سيراميك</option><option>فني محارة</option>
-            </select>
-            <textarea style="height: 100px;" placeholder="اكتب مشكلتك هنا بالتفصيل.."></textarea>
-            <button class="btn" onclick="alert('تم نشر طلبك للصنايعية في منطقتك'); showBadge();">إرسال الطلب</button>
-        </div>
-    </div>
+<!-- WORKER -->
+<div id="worker" class="screen">
+<div class="card">
+رصيدك: <b id="workerBalance">0</b> ج  
+<button class="btn" onclick="withdraw()">طلب سحب</button>
+</div>
+<h3>الطلبات المتاحة</h3>
+<div id="workerJobs"></div>
+</div>
 
-    <div id="scr-worker-main" class="screen">
-        <div id="debt-alert" class="alert-box" style="display:none;">
-            <i class="fas fa-lock fa-2x"></i><br>
-            <strong>الحساب متوقف مؤقتاً</strong><br>
-            مديونيتك تخطت 1000 ج. يرجى السداد.
-        </div>
-        <div class="card" style="text-align: center; border-color: var(--danger);">
-            <p>المديونية المستحقة للمنصة</p>
-            <div class="wallet-amount" id="worker-debt-display">150 ج.م</div>
-            <button class="btn" style="background:var(--success); color:white;" onclick="nav('scr-wallet')">سداد المديونية الآن</button>
-        </div>
-        <div id="jobs-container">
-            <h3>طلبات متاحة لك</h3>
-            <div class="card">
-                <strong>مرمة محارة ودهان</strong>
-                <p><small>الحي العاشر - مطلوب فني فوراً</small></p>
-                <button class="btn" onclick="nav('scr-chat')">قبول الشغلانة</button>
-            </div>
-        </div>
-    </div>
+<!-- CHAT -->
+<div id="chat" class="screen">
+<h3>الدردشة</h3>
+<div id="chatBox" style="height:50vh;overflow-y:auto;margin-bottom:10px;"></div>
+<input id="msg" placeholder="اكتب هنا..">
+<button class="btn" onclick="sendMsg()">إرسال</button>
+</div>
 
-    <div id="scr-wallet" class="screen">
-        <h3>المحفظة والسداد</h3>
-        <div class="card" style="text-align: center;">
-            <p>حول المبلغ عبر <strong>InstaPay</strong></p>
-            <div class="card" style="background:#000; border:1px solid var(--main); font-size:1.3rem;">01020744825</div>
-            <button class="btn" onclick="nav('scr-chat')">إرسال الإيصال</button>
-        </div>
-    </div>
+<!-- ADMIN -->
+<div id="admin" class="screen">
+<div class="card">
+<b>لوحة تحكم الأدمن</b><br>
+إجمالي أرباح المنصة: <span id="adminProfit">0</span> ج
+</div>
+<h3>طلبات السحب</h3>
+<div id="withdrawRequests"></div>
+</div>
 
-    <div id="scr-admin-dashboard" class="screen">
-        <h2 style="color: var(--admin);">لوحة تحكم الإدارة</h2>
-        <div class="admin-stat">
-            <div class="stat-box">إجمالي الديون<span>4,250 ج</span></div>
-            <div class="stat-box">فنيين نشطين<span>24</span></div>
-        </div>
-        <h3>مراقبة الفنيين</h3>
-        <div class="card" id="admin-worker-list">
-            <div class="notif-item">أحمد (سباك) - 1200 ج <span style="color:var(--danger)">محظور</span></div>
-        </div>
-    </div>
+<div class="nav" id="nav">
+<div onclick="home()">الرئيسية</div>
+<div onclick="showChat()">الدردشة</div>
+<div onclick="logout()" style="color:#ef4444">خروج</div>
+</div>
 
-    <div id="scr-notifications" class="screen"><h3>التنبيهات</h3><div id="notif-content"></div></div>
-    <div id="scr-chat" class="screen"><h3>المحادثة</h3><div class="chat-container"><div style="flex:1; padding:15px;">دعم منصة محمد معك..</div></div></div>
+<script>
+const COMMISSION = 0.20;
+let adminClicks=0;
+let adminPass="Mohamed214@";
+let currentJobId=null;
 
-    <nav id="app-nav" class="nav-bottom">
-        <div class="nav-item" onclick="goHome()"><i class="fas fa-home"></i>الرئيسية</div>
-        <div class="nav-item" onclick="showNotifications()"><i class="fas fa-bell"></i>تنبيهات<span id="notif-badge" class="badge" style="display:none;">1</span></div>
-        <div class="nav-item" onclick="nav('scr-chat')"><i class="fas fa-comments"></i>شات</div>
-        <div class="nav-item" id="nav-wallet-link" onclick="nav('scr-wallet')"><i class="fas fa-wallet"></i>المحفظة</div>
-        <div class="nav-item" id="nav-admin-link" style="display:none; color:var(--admin);" onclick="nav('scr-admin-dashboard')"><i class="fas fa-user-shield"></i>المدير</div>
-    </nav>
+let state=JSON.parse(localStorage.getItem("state"))||{
+  users:{},jobs:[],msgs:[],withdraws:[],profit:0
+};
+let user=null;
 
-    <script>
-        let currentUser = "";
-        let workerDebt = 150; 
+// ADMIN access on logo triple click
+logo.onclick=()=>{
+  adminClicks++;
+  setTimeout(()=>adminClicks=0,1500);
+  if(adminClicks==3){
+    let p=prompt("كلمة مرور الأدمن");
+    if(p===adminPass){show("admin");renderAdmin();nav.style.display="flex";}
+  }
+}
 
-        function nav(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(id === 'scr-worker-main') checkWorkerStatus();
-        }
+// Save state
+function save(){localStorage.setItem("state",JSON.stringify(state));}
 
-        function activateUser(type, startScreen) {
-            currentUser = type;
-            document.getElementById('app-nav').classList.add('nav-active');
-            document.getElementById('nav-wallet-link').style.display = (type === 'worker') ? 'block' : 'none';
-            document.getElementById('nav-admin-link').style.display = (type === 'admin') ? 'block' : 'none';
-            nav(startScreen);
-        }
+// LOGIN
+function login(){
+  let ph=phone.value.trim();
+  if(!ph){alert("أدخل رقم الهاتف"); return;}
+  if(!state.users[ph]){
+    state.users[ph]={role:role.value,skill:skill.value,balance:0};
+  }
+  user={ph};
+  save();home();
+}
 
-        function checkWorkerStatus() {
-            const isBlocked = (workerDebt >= 1000);
-            document.getElementById('debt-alert').style.display = isBlocked ? 'block' : 'none';
-            document.getElementById('jobs-container').style.opacity = isBlocked ? '0.2' : '1';
-            document.getElementById('worker-debt-display').innerText = workerDebt + " ج.م";
-        }
+// HOME
+function home(){
+  nav.style.display="flex";
+  let r=state.users[user.ph].role;
+  show(r);
+  render();
+}
 
-        function showNotifications() {
-            const container = document.getElementById('notif-content');
-            container.innerHTML = `<div class="card">لا توجد تنبيهات جديدة حالياً.</div>`;
-            document.getElementById('notif-badge').style.display = "none";
-            nav('scr-notifications');
-        }
+// SHOW SCREEN
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
-        function showBadge() { document.getElementById('notif-badge').style.display = "block"; }
+// POST JOB
+function postJob(){
+  let d=desc.value.trim(), p=+price.value;
+  if(!d || !p){alert("املأ كل الحقول"); return;}
+  state.jobs.push({id:Date.now(),client:user.ph,desc:d,price:p,status:"open",offers:[]});
+  desc.value=""; price.value="";
+  save(); render();
+}
 
-        function goHome() {
-            if(currentUser === 'admin') nav('scr-admin-dashboard');
-            else if(currentUser === 'client') nav('scr-client-order');
-            else nav('scr-worker-main');
-        }
-    </script>
-</body>
-                                                                                                                                             </html>
+// RENDER CLIENT / WORKER
+function render(){
+  let role=state.users[user.ph].role;
+  if(role==="client"){
+    clientJobs.innerHTML=state.jobs.filter(j=>j.client===user.ph)
+    .map(j=>`
+      <div class="card">
+        ${j.desc}<br>
+        ${j.offers.map(o=>`
+          <div>عرض ${o.price} ج 
+          <button onclick="accept(${o.jobId||j.id},'${o.ph}',${o.price})">قبول</button></div>`).join("")}
+      </div>
+    `).join("");
+  }else{
+    workerBalance.innerText=state.users[user.ph].balance;
+    workerJobs.innerHTML=state.jobs.filter(j=>j.status==="open" && j.type===state.users[user.ph].skill)
+    .map(j=>`
+      <div class="card">
+        ${j.desc} - ${j.price} ج
+        <button onclick="offer(${j.id})">تقديم عرض</button>
+      </div>
+    `).join("");
+  }
+}
+
+// WORKER OFFER
+function offer(id){
+  let j=state.jobs.find(j=>j.id==id);
+  let p=prompt("سعرك");
+  if(!p) return;
+  j.offers.push({ph:user.ph,price:+p});
+  save(); render();
+}
+
+// ACCEPT OFFER
+function accept(id,ph,price){
+  let j=state.jobs.find(j=>j.id==id);
+  let fee=Math.round(price*COMMISSION);
+  let net=price-fee;
+  j.worker=ph; j.final=price; j.platformFee=fee; j.workerNet=net; j.status="work";
+  state.users[ph].balance+=net;
+  state.profit+=fee;
+  currentJobId=j.id;
+  save(); show("chat");
+}
+
+// CHAT
+function sendMsg(){
+  if(!currentJobId){alert("لا يوجد شغل جاري"); return;}
+  state.msgs.push({job:currentJobId,from:user.ph,text:msg.value});
+  msg.value="";
+  save(); showChat();
+}
+
+function showChat(){
+  if(!currentJobId){chatBox.innerHTML="لا يوجد دردشة"; return;}
+  let j=state.jobs.find(j=>j.id===currentJobId);
+  chatBox.innerHTML=state.msgs.filter(m=>m.job===j.id)
+    .map(m=>`<div class="msg ${m.from===user.ph?'sent':'received'}">${m.text}</div>`).join("");
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+// WORKER WITHDRAW
+function withdraw(){
+  let bal=state.
