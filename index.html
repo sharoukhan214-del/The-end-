@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNAY3Y PRO | الماستر</title>
+    <title>SNAY3Y PRO | الإصدار النهائي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --main-gold: #f59e0b; --bg-dark: #020617; }
-        body { font-family: 'Cairo', sans-serif; background: var(--bg-dark); color: white; margin: 0; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        #map { height: 280px; border-radius: 24px; border: 2px solid #1e293b; z-index: 10; }
-        .active-tab { background: var(--main-gold) !important; color: black !important; font-weight: 900; }
-        .order-card { border-right: 6px solid var(--main-gold); transition: 0.3s; }
-        .order-card:hover { transform: scale(1.02); }
+        body { font-family: 'Cairo', sans-serif; background: #020617; color: white; margin: 0; overflow-x: hidden; }
+        .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        #map { height: 250px; border-radius: 20px; border: 2px solid #334155; margin-bottom: 10px; z-index: 10; }
+        .tab-active { background: #f59e0b !important; color: black !important; font-weight: 900; }
         input, select { background: #0f172a !important; border: 1px solid #334155 !important; color: white !important; }
     </style>
 </head>
@@ -24,58 +21,64 @@
 
     <audio id="order-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
 
-    <header class="p-4 border-b border-slate-800 flex justify-between items-center sticky top-0 bg-slate-950/90 backdrop-blur z-[100]">
-        <h1 id="logo" class="text-2xl font-black text-amber-500 cursor-pointer select-none" onclick="adminTrigger()">SNAY3Y PRO</h1>
-        <div id="wallet-pill" class="hidden flex items-center gap-2 bg-red-500/10 text-red-400 px-3 py-1 rounded-full border border-red-500/20 text-xs font-bold">
+    <header class="p-4 border-b border-slate-800 flex justify-between items-center sticky top-0 bg-slate-950/90 z-[100]">
+        <h1 id="logo" class="text-2xl font-black text-amber-500 cursor-pointer" onclick="adminTrigger()">SNAY3Y PRO</h1>
+        <div id="wallet-pill" class="hidden text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded-full border border-red-500/20 font-bold">
             الديون: <span id="w-val">0</span> ج.م
         </div>
     </header>
 
     <main class="p-4 max-w-2xl mx-auto pb-24">
-        
         <nav class="flex gap-2 mb-6 bg-slate-900 p-1.5 rounded-2xl">
-            <button id="tab-c" onclick="navTo('client')" class="flex-1 py-3 rounded-xl active-tab transition-all">طلب فني</button>
+            <button id="tab-c" onclick="navTo('client')" class="flex-1 py-3 rounded-xl tab-active transition-all">طلب فني</button>
             <button id="tab-w" onclick="navTo('worker')" class="flex-1 py-3 rounded-xl text-slate-400 font-bold transition-all">أنا فني</button>
         </nav>
 
         <div id="sec-client" class="space-y-4">
-            <div class="glass p-6 rounded-[2.5rem] shadow-2xl">
-                <h2 class="text-xl font-black mb-4 text-center">أقرب صنايعي لبيتك 🛠️</h2>
+            <div class="glass p-6 rounded-[2.5rem]">
+                <h2 class="text-xl font-bold mb-4 text-center text-amber-500">🚀 اطلب فني الآن</h2>
                 <input id="c-ph" type="tel" placeholder="رقم موبايلك" class="w-full p-4 rounded-2xl mb-3 outline-none">
                 <select id="c-srv" class="w-full p-4 rounded-2xl mb-4 outline-none">
                     <option value="سباك">سباك</option>
                     <option value="كهربائي">كهربائي</option>
                     <option value="تكييف">فني تكييف</option>
                 </select>
-                <div id="map" class="mb-4"></div>
-                <button id="send-order-btn" onclick="submitOrder()" class="w-full p-4 bg-amber-500 text-black font-black rounded-2xl shadow-xl active:scale-95 transition-all">اطلب الآن</button>
-            </div>
-            <div id="status-box" class="hidden glass p-5 rounded-2xl border-r-4 border-amber-500 text-center animate-pulse">
-                <p class="font-bold text-amber-400">📡 طلبك الآن في الرادار.. الفنيين بيشوفوه</p>
+                <div id="map"></div>
+                <button onclick="submitOrder()" class="w-full p-4 bg-amber-500 text-black font-black rounded-2xl shadow-xl">تأكيد الطلب</button>
             </div>
         </div>
 
         <div id="sec-worker" class="hidden space-y-4">
-            <div id="w-form" class="glass p-6 rounded-[2.5rem]">
-                <h2 class="text-xl font-black text-amber-500 mb-4 text-center">سجل واربح معنا</h2>
-                <input id="w-n" type="text" placeholder="الاسم الكامل" class="w-full p-4 rounded-2xl mb-3 outline-none">
-                <input id="w-id" type="number" placeholder="الرقم القومي (14 رقم)" class="w-full p-4 rounded-2xl mb-3 outline-none">
-                <select id="w-s" class="w-full p-4 rounded-2xl mb-3 outline-none">
-                    <option value="سباك">سباك</option>
-                    <option value="كهربائي">كهربائي</option>
-                    <option value="تكييف">فني تكييف</option>
+            <div id="w-auth-choice" class="glass p-6 rounded-[2.5rem] flex gap-4">
+                <button onclick="toggleWorkerAuth('login')" class="flex-1 bg-blue-600 p-4 rounded-2xl font-black">تسجيل دخول</button>
+                <button onclick="toggleWorkerAuth('signup')" class="flex-1 bg-slate-700 p-4 rounded-2xl font-black">إنشاء حساب</button>
+            </div>
+
+            <div id="w-login-form" class="hidden glass p-6 rounded-[2.5rem] space-y-3">
+                <h2 class="text-xl font-black text-center text-amber-500">دخول الفنيين</h2>
+                <input id="log-ph" type="tel" placeholder="رقم الموبايل" class="w-full p-4 rounded-2xl outline-none">
+                <input id="log-pass" type="password" placeholder="كلمة المرور" class="w-full p-4 rounded-2xl outline-none">
+                <button onclick="workerLogin()" class="w-full p-4 bg-green-600 font-black rounded-2xl shadow-lg">دخول</button>
+            </div>
+
+            <div id="w-signup-form" class="hidden glass p-6 rounded-[2.5rem] space-y-3 text-right">
+                <h2 class="text-xl font-black text-center text-amber-500">انضم للمحترفين</h2>
+                <input id="w-full-name" type="text" placeholder="الاسم الرباعي كما بالبطاقة" class="w-full p-4 rounded-2xl outline-none">
+                <input id="w-reg-ph" type="tel" placeholder="رقم الموبايل" class="w-full p-4 rounded-2xl outline-none">
+                <input id="w-reg-nid" type="number" placeholder="الرقم القومي (14 رقم)" class="w-full p-4 rounded-2xl outline-none">
+                <input id="w-reg-pass" type="password" placeholder="اختر كلمة مرور" class="w-full p-4 rounded-2xl outline-none">
+                <select id="w-reg-spec" class="w-full p-4 rounded-2xl outline-none">
+                    <option value="سباك">سباك</option><option value="كهربائي">كهربائي</option><option value="تكييف">فني تكييف</option>
                 </select>
-                <input id="w-ph" type="tel" placeholder="رقم الموبايل" class="w-full p-4 rounded-2xl mb-4 outline-none">
-                <button onclick="handleWorkerReg()" class="w-full p-4 bg-blue-600 font-black rounded-2xl">طلب انضمام</button>
+                <p class="text-[10px] text-slate-400">ارفع صورة البطاقة (اختياري حالياً):</p>
+                <input type="file" class="text-xs">
+                <button onclick="workerSignUp()" class="w-full p-4 bg-blue-600 font-black rounded-2xl">إرسال طلب التوثيق</button>
             </div>
 
             <div id="w-lock" class="hidden glass p-8 rounded-[2.5rem] text-center border-2 border-red-500">
-                <h2 class="text-red-500 font-black text-2xl mb-4">الحساب متوقف مؤقتاً</h2>
-                <p class="text-sm mb-6 text-slate-300">تجاوزت حد الـ 1000ج. يرجى التحويل لاستكمال العمل.</p>
-                <div class="bg-slate-900 p-4 rounded-2xl mb-6 font-mono text-amber-500 text-xl font-bold tracking-widest">
-                    01020744825
-                </div>
-                <a href="https://wa.me/201020744825" class="block w-full bg-green-600 p-4 rounded-2xl font-black shadow-lg">إرسال صورة التحويل</a>
+                <h2 class="text-red-500 font-black text-2xl mb-4">الحساب متوقف</h2>
+                <p class="text-sm mb-6 text-slate-300">مديونيتك تجاوزت 1000ج. حول للرقم:</p>
+                <div class="bg-slate-900 p-4 rounded-2xl text-amber-500 text-xl font-bold">01020744825</div>
             </div>
 
             <div id="w-active" class="hidden space-y-4">
@@ -84,17 +87,17 @@
         </div>
 
         <div id="sec-admin" class="hidden space-y-4">
-            <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-3xl border border-slate-700 text-center shadow-2xl">
-                <p class="text-xs text-slate-400 font-bold mb-1">أرباحك المحصلة (20%)</p>
+            <div class="bg-slate-900 p-6 rounded-3xl border border-slate-700 text-center shadow-2xl">
+                <p class="text-xs text-slate-400 font-bold mb-1">إجمالي الأرباح (20%)</p>
                 <p id="total-revenue" class="text-4xl font-black text-green-500">0</p>
             </div>
-            <div id="pending-workers-list" class="space-y-3"></div>
+            <div id="pending-workers-list" class="space-y-3 mt-4"></div>
         </div>
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // 1. التأسيس
+        // --- الأساسيات ---
         const firebaseConfig = {
             apiKey: "AIzaSyBp6XDnQj80f1B1c5hW",
             databaseURL: "https://snay3y-pro-default-rtdb.firebaseio.com",
@@ -105,55 +108,55 @@
         const db = firebase.database();
         let currentWID = localStorage.getItem('worker_id');
 
-        // 2. التنقل
         function navTo(target) {
             ['sec-client', 'sec-worker', 'sec-admin'].forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById('sec-' + target).classList.remove('hidden');
-            
-            document.getElementById('tab-c').className = "flex-1 py-3 rounded-xl " + (target === 'client' ? 'active-tab' : 'text-slate-400 font-bold');
-            document.getElementById('tab-w').className = "flex-1 py-3 rounded-xl " + (target === 'worker' ? 'active-tab' : 'text-slate-400 font-bold');
-            
+            document.getElementById('tab-c').className = "flex-1 py-3 rounded-xl " + (target === 'client' ? 'tab-active' : 'text-slate-400 font-bold');
+            document.getElementById('tab-w').className = "flex-1 py-3 rounded-xl " + (target === 'worker' ? 'tab-active' : 'text-slate-400 font-bold');
             if(target === 'worker' && currentWID) syncWorker();
         }
 
-        // 3. الخريطة
-        let map = L.map('map', {zoomControl: false}).setView([30.0444, 31.2357], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let myMarker;
-        map.locate({setView: true, maxZoom: 16});
-        map.on('locationfound', e => { if(myMarker) map.removeLayer(myMarker); myMarker = L.marker(e.latlng).addTo(map); });
+        function toggleWorkerAuth(mode) {
+            document.getElementById('w-auth-choice').classList.add('hidden');
+            if(mode === 'login') document.getElementById('w-login-form').classList.remove('hidden');
+            else document.getElementById('w-signup-form').classList.remove('hidden');
+        }
 
-        // 4. نظام العميل
-        function submitOrder() {
-            const ph = document.getElementById('c-ph').value;
-            if(!ph) return alert("ادخل رقم موبايلك!");
-            const btn = document.getElementById('send-order-btn');
-            btn.disabled = true;
-            btn.innerHTML = "جاري النشر...";
-            
-            db.ref('orders').push({
-                ph, srv: document.getElementById('c-srv').value,
-                lat: myMarker.getLatLng().lat, lng: myMarker.getLatLng().lng,
-                status: 'waiting', ts: Date.now()
+        // --- نظام الصنايعي ---
+        function workerSignUp() {
+            const name = document.getElementById('w-full-name').value.trim();
+            const nid = document.getElementById('w-reg-nid').value;
+            const ph = document.getElementById('w-reg-ph').value;
+            const pass = document.getElementById('w-reg-pass').value;
+
+            if(name.split(" ").length < 4) return alert("الاسم لازم رباعي يا فنان!");
+            if(nid.length !== 14) return alert("الرقم القومي غلط!");
+            if(!ph || !pass) return alert("أكمل البيانات!");
+
+            db.ref('pending_workers').push({
+                name, nid, ph, password: pass,
+                spec: document.getElementById('w-reg-spec').value,
+                wallet: 0
             }).then(() => {
-                btn.innerHTML = "تم النشر ✅";
-                document.getElementById('status-box').classList.remove('hidden');
+                alert("تم إرسال طلبك! استنى المدير يفعلك ✅");
+                location.reload();
             });
         }
 
-        // 5. نظام الفني
-        function handleWorkerReg() {
-            const idVal = document.getElementById('w-id').value;
-            if(idVal.length !== 14) return alert("الرقم القومي غير صحيح");
-            const ref = db.ref('pending_workers').push();
-            ref.set({
-                name: document.getElementById('w-n').value, nid: idVal,
-                ph: document.getElementById('w-ph').value,
-                spec: document.getElementById('w-s').value, wallet: 0
-            }).then(() => {
-                localStorage.setItem('worker_id', ref.key);
-                currentWID = ref.key;
-                alert("طلبك قيد المراجعة..");
+        function workerLogin() {
+            const ph = document.getElementById('log-ph').value;
+            const pass = document.getElementById('log-pass').value;
+
+            db.ref('verified_workers').orderByChild('ph').equalTo(ph).once('value', snap => {
+                if(snap.exists()) {
+                    let wKey;
+                    snap.forEach(ch => { if(ch.val().password === pass) wKey = ch.key; });
+                    if(wKey) {
+                        currentWID = wKey;
+                        localStorage.setItem('worker_id', wKey);
+                        syncWorker();
+                    } else { alert("الباسورد غلط ❌"); }
+                } else { alert("رقمك مش مسجل أو لسه متفعلش ❌"); }
             });
         }
 
@@ -161,7 +164,8 @@
             db.ref('verified_workers/' + currentWID).on('value', snap => {
                 if(!snap.exists()) return;
                 const data = snap.val();
-                document.getElementById('w-form').classList.add('hidden');
+                document.getElementById('w-auth-choice').classList.add('hidden');
+                document.getElementById('w-login-form').classList.add('hidden');
                 document.getElementById('wallet-pill').classList.remove('hidden');
                 document.getElementById('w-val').innerText = Math.round(data.wallet);
                 
@@ -179,118 +183,79 @@
         function initRadar(spec) {
             db.ref('orders').on('value', snap => {
                 const ui = document.getElementById('radar-ui');
-                ui.innerHTML = '<h3 class="text-center text-green-500 font-bold animate-pulse">📡 جاري رصد طلبات الـ ' + spec + '...</h3>';
-                let found = false;
+                ui.innerHTML = '<h3 class="text-center text-green-500 font-bold animate-pulse">📡 الرادار يبحث عن طلبات ' + spec + '...</h3>';
                 snap.forEach(ch => {
                     const o = ch.val();
                     if(o.status === 'waiting' && o.srv === spec) {
-                        found = true;
                         ui.innerHTML += `
-                        <div class="order-card glass p-5 rounded-2xl shadow-lg">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="bg-amber-500 text-black px-2 py-1 rounded-lg text-[10px] font-black italic">طلب مباشر</span>
-                                <span class="text-slate-400 text-xs">منذ ثوانٍ</span>
-                            </div>
-                            <button onclick="takeJob('${ch.key}', '${o.ph}')" class="w-full bg-green-600 py-3 rounded-xl font-black shadow-xl">✅ قبول وتواصل</button>
+                        <div class="glass p-5 rounded-2xl border-r-4 border-amber-500 shadow-lg">
+                            <p class="font-black text-amber-500 mb-2">مطلوب ${o.srv} الآن</p>
+                            <button onclick="takeJob('${ch.key}', '${o.ph}')" class="w-full bg-green-600 py-3 rounded-xl font-black">قبول وتواصل</button>
                         </div>`;
+                        document.getElementById('order-sound').play();
                     }
                 });
-                if(found) document.getElementById('order-sound').play();
             });
         }
 
         function takeJob(id, clientPh) {
-            let price = prompt("قيمة الشغلانة:");
+            let price = prompt("قيمة الشغلانة كام؟");
             if(price > 0) {
                 db.ref('verified_workers/' + currentWID + '/wallet').transaction(w => (w || 0) + (price * 0.2));
-                db.ref('orders/' + id).update({ status: 'done', winner: currentWID });
+                db.ref('orders/' + id).update({ status: 'done' });
                 window.location.href = "tel:" + clientPh;
             }
         }
 
-// --- نظام الإدارة المتطور ---
-let clicks = 0;
-function adminTrigger() {
-    clicks++;
-    if(clicks === 5) {
-        let pass = prompt("أدخل كلمة سر الإدارة للأهمية:");
-        
-        // هنا بقى القفل الحقيقي:
-        if(pass === "Mohamed214@") { 
-            navTo('admin'); 
-            loadAdmin(); 
-            alert("تم الدخول بنجاح يا مدير ✅");
-        } else {
-            alert("⚠️ كلمة السر غلط.. مش أي حد يدخل هنا!");
+        // --- نظام العميل ---
+        let map = L.map('map', {zoomControl: false}).setView([30.0444, 31.2357], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        let myMarker;
+        map.locate({setView: true, maxZoom: 16});
+        map.on('locationfound', e => { if(myMarker) map.removeLayer(myMarker); myMarker = L.marker(e.latlng).addTo(map); });
+
+        function submitOrder() {
+            const ph = document.getElementById('c-ph').value;
+            if(!ph) return alert("اكتب رقمك!");
+            db.ref('orders').push({
+                ph, srv: document.getElementById('c-srv').value,
+                status: 'waiting', ts: Date.now()
+            }).then(() => alert("طلبك اتنشر في الرادار!"));
         }
-        
-        clicks = 0; // تصغير العداد عشان يحاول تاني لو غلط
-    }
-}
 
-function loadAdmin() {
-    const list = document.getElementById('pending-workers-list');
-    
-    // 1. عرض طلبات التوثيق الجديدة
-    db.ref('pending_workers').on('value', snap => {
-        list.innerHTML = '<h3 class="text-amber-500 font-bold mb-2 mt-4 text-right">⏳ طلبات انضمام جديدة</h3>';
-        if(!snap.exists()) list.innerHTML += '<p class="text-xs text-slate-500 text-right">لا توجد طلبات معلقة</p>';
-        snap.forEach(c => {
-            list.innerHTML += `
-            <div class="bg-slate-800 p-4 rounded-2xl flex justify-between items-center mb-2 border border-slate-700 text-right" dir="rtl">
-                <div class="text-xs">
-                    <b class="text-white text-sm">${c.val().name}</b><br>
-                    <span class="text-slate-400">${c.val().spec} | ${c.val().ph}</span>
-                </div>
-                <button onclick="approve('${c.key}')" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-bold">توثيق</button>
-            </div>`;
-        });
-    });
+        // --- نظام الإدارة ---
+        let clicks = 0;
+        function adminTrigger() {
+            clicks++;
+            if(clicks === 5) {
+                if(prompt("كلمة سر الإدارة:") === "Mohamed214@") { navTo('admin'); loadAdmin(); }
+                clicks = 0;
+            }
+        }
 
-    // 2. إدارة الفنيين الموثقين والمديونيات
-    db.ref('verified_workers').on('value', snap => {
-        list.innerHTML += '<h3 class="text-blue-500 font-bold mb-2 mt-6 text-right">👥 إدارة الفنيين والديون</h3>';
-        let totalRev = 0;
-        snap.forEach(c => {
-            const w = c.val();
-            totalRev += (w.wallet || 0);
-            list.innerHTML += `
-            <div class="bg-slate-900 p-4 rounded-2xl mb-2 border border-slate-800 text-right" dir="rtl">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <b class="text-white block">${w.name}</b>
-                        <span class="text-[10px] text-amber-500">المديونية: ${Math.round(w.wallet)} ج.م</span>
-                    </div>
-                    <div class="flex gap-1">
-                        <button onclick="clearWallet('${c.key}')" class="bg-amber-600 text-white px-2 py-1 rounded text-[10px] font-bold">دفع</button>
-                        <button onclick="deleteWorker('${c.key}')" class="bg-red-900/30 text-red-500 px-2 py-1 rounded text-[10px]">حذف</button>
-                    </div>
-                </div>
-            </div>`;
-        });
-        document.getElementById('total-revenue').innerText = Math.round(totalRev) + " ج.م";
-    });
-}
+        function loadAdmin() {
+            const list = document.getElementById('pending-workers-list');
+            db.ref('pending_workers').on('value', snap => {
+                list.innerHTML = '<h3 class="text-amber-500 font-bold mb-2">⏳ طلبات توثيق فنيين</h3>';
+                snap.forEach(c => {
+                    list.innerHTML += `<div class="bg-slate-800 p-4 rounded-2xl flex justify-between items-center mb-2">
+                        <div class="text-xs"><b>${c.val().name}</b><br>${c.val().ph}</div>
+                        <button onclick="approve('${c.key}')" class="bg-green-600 px-3 py-1 rounded-lg text-xs">قبول</button>
+                    </div>`;
+                });
+            });
+            db.ref('verified_workers').on('value', snap => {
+                let r = 0; snap.forEach(c => r += (c.val().wallet || 0));
+                document.getElementById('total-revenue').innerText = Math.round(r) + " ج.م";
+            });
+        }
 
-function approve(id) {
-    db.ref('pending_workers/' + id).once('value', snap => {
-        db.ref('verified_workers/' + id).set({...snap.val(), wallet: 0});
-        db.ref('pending_workers/' + id).remove();
-        alert("تم توثيق الفني ✅");
-    });
-}
-
-function clearWallet(id) {
-    if(confirm("تصفير مديونية الفني؟")) {
-        db.ref('verified_workers/' + id).update({ wallet: 0 });
-    }
-}
-
-function deleteWorker(id) {
-    if(confirm("حذف الفني نهائياً؟")) {
-        db.ref('verified_workers/' + id).remove();
-    }
-}
+        function approve(id) {
+            db.ref('pending_workers/' + id).once('value', snap => {
+                db.ref('verified_workers/' + id).set({...snap.val(), wallet: 0});
+                db.ref('pending_workers/' + id).remove();
+            });
+        }
     </script>
 </body>
 </html>
