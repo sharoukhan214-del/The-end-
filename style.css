@@ -12,3 +12,33 @@ body { font-family: 'Cairo', sans-serif; background: var(--dark); color: #f8fafc
 /* اللوجو السري */
 .logo-btn { cursor: pointer; user-select: none; transition: 0.2s; }
 .logo-btn:active { transform: scale(0.95); }
+/* خلفية سينمائية متدرجة */
+body {
+    background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* كروت زجاجية (Glassmorphism) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+}
+
+/* تأثير النيون على الأزرار */
+.btn-neon {
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+}
+.btn-neon:hover {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+}
