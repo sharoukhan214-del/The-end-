@@ -1,9 +1,43 @@
-<header class="p-4 flex justify-between items-center glass">
-    <h1 onclick="handleLogoClick()" class="logo text-2xl font-black text-amber-500">
-        SNAY3Y <span class="text-white">PRO</span>
-    </h1>
-</header>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>SNAY3Y PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="p-4 glass sticky top-0 z-50 flex justify-between items-center">
+        <h1 onclick="handleLogoClick()" class="logo-btn text-2xl font-black text-amber-500">SNAY3Y PRO</h1>
+        <button onclick="location.reload()" class="text-xs opacity-50">خروج</button>
+    </header>
 
-<div id="client-screen">
-    <input id="c-budget" type="number" placeholder="ميزانيتك المبدئية للخدمة" class="input-pro">
-</div>
+    <main class="max-w-md mx-auto p-4">
+        <div id="auth-screen" class="screen space-y-4 pt-10">
+            <h2 class="text-center text-xl font-bold">تسجيل دخول</h2>
+            <input id="login-phone" placeholder="رقم الموبايل" class="input-pro">
+            <input id="login-pass" type="password" placeholder="كلمة السر" class="input-pro">
+            <button onclick="handleLogin()" class="btn-gold w-full py-4">دخول النظام</button>
+        </div>
+
+        <div id="worker-screen" class="screen hidden">
+            <div class="glass p-4 rounded-2xl mb-6 flex justify-between items-center">
+                <span class="text-xs">مديونيتك: <b id="w-debt-ui">0</b> ج.م</span>
+                <span class="text-[10px] text-amber-500 italic">انستا باي: 01020744825</span>
+            </div>
+            <div id="radar-list"></div>
+        </div>
+        
+        <div id="admin-screen" class="screen hidden bg-slate-900 p-6 rounded-3xl min-h-[400px]">
+            <h2 class="text-amber-500 font-black mb-4">لوحة القبطان العليا</h2>
+            <div id="admin-content" class="text-xs space-y-2">
+                </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
