@@ -1,4 +1,4 @@
-// مفاتيح فايربيس الخاصة بك
+// بيانات Firebase الخاصة بك
 const firebaseConfig = {
     apiKey: "AIzaSyBp6XDnQj80f1B1c5hW",
     databaseURL: "https://snay3y-pro-default-rtdb.firebaseio.com",
@@ -7,10 +7,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// بيانات الإدارة العليا (قبطان السيستم)
-const ADMIN_DATA = {
+// بيانات القبطان (إدارة السيستم)
+const ADMIN_CONF = {
     phone: "01020744825",
     pass: "Mohamed214@",
-    instapay_phone: "01020744825",
-    max_debt: 1000
+    instapay: "01020744825",
+    commission: 20, // العمولة بالجنيه
+    limit: 1000     // حد المديونية
 };
