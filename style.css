@@ -1,44 +1,35 @@
-:root { --amber: #fbbf24; --dark: #0f172a; --card: #1e293b; }
-body { font-family: 'Cairo', sans-serif; background: var(--dark); color: #f8fafc; margin: 0; }
-.glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-.btn-gold { background: linear-gradient(45deg, #fbbf24, #f59e0b); color: #000; font-weight: 900; border-radius: 15px; }
-.input-pro { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 12px; width: 100%; color: white; outline: none; }
-.hidden { display: none; }
-
-/* أنيميشن الرادار الحي */
-.pulse { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 0 rgba(34, 197, 94, 0.4); animation: pulse-red 2s infinite; }
-@keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
-
-/* اللوجو السري */
-.logo-btn { cursor: pointer; user-select: none; transition: 0.2s; }
-.logo-btn:active { transform: scale(0.95); }
-/* خلفية سينمائية متدرجة */
 body {
-    background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: radial-gradient(circle at top, #1e293b, #0f172a);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* تكبير كارت الدخول وتوسيطه بذكاء */
+.auth-container {
+    margin-top: 10%;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 40px;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 400px;
+    align-self: center;
 }
 
-/* كروت زجاجية (Glassmorphism) */
-.glass-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    border-radius: 30px;
+/* جعل الأزرار ضخمة وسهلة الضغط */
+.btn-gold {
+    height: 60px;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 20px rgba(251, 191, 36, 0.2);
 }
 
-/* تأثير النيون على الأزرار */
-.btn-neon {
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
-    border: 1px solid rgba(251, 191, 36, 0.5);
-}
-.btn-neon:hover {
-    box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+/* تنسيق عدادات الإحصائيات بشكل دائري جذاب */
+.stat-circle {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
